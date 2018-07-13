@@ -1,0 +1,731 @@
+@font-face {
+    font-family: 'Muli-Bold';
+    src: url(../fonts/Muli-Bold.ttf);
+}
+body.cms-page-view {
+    color: #333;
+    font-size: 14px;
+}
+/* Page Chisiamo */
+
+.cms-chi-siamo .main-container {
+    max-width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+}
+.banner-cmspage .section {
+    margin-bottom: 10px;
+    position: relative;
+}
+.banner-cmspage .wrapper-overlay {
+    display: flex;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.banner-cmspage .container-overlay {
+    margin: auto;
+    max-width: 1260px;
+    padding: 0 30px;
+}
+.banner-cmspage .box-overlay {
+    background: rgba(255,255,255,0.5);
+    display: inline-block;
+    padding: 40px;
+    vertical-align: middle;
+    width: 57.5%;
+}
+.banner-cmspage h1 {
+    font-size: 45px;
+    margin-bottom: 15px;
+    text-transform: none;
+}
+.cms-container {
+    margin: 0 auto;
+    max-width: 1260px;
+    padding: 0 30px;
+}
+.block-lasede {
+    background-color: #eee;
+    padding: 100px 0;
+}
+.block-progettti {
+    padding: 70px 0;
+}
+.chisiamo-lasede .cms-container::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.chisiamo-lasede {
+    background-color: #eee;
+    padding: 120px 0;
+}
+.chisiamo-lasede .box {
+    margin: 30px 0 0;
+}
+.chisiamo-lasede .box-left {
+    float: right;
+    width: 50%;
+}
+.chisiamo-lasede .box-right {
+    float: left;
+    width: 45%;
+}
+.chisiamo-progettti:after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.chisiamo-progettti .box-left {
+    float: left;
+    width: 50%;
+}
+.chisiamo-progettti .box-right {
+    float: right;
+    width: 45%;
+}
+.banner-cmspage .section strong {
+    font-family: "Muli-Bold", sans-serif !important;
+    font-weight: 500;
+}
+.chisiamo-lasede .box h1 {
+    color: #466c99;
+    margin-bottom: 0;
+    margin-top: 30px;
+}
+.chisiamo-lasede .box p {
+    color: #575753;
+    line-height: 22px;
+}
+.cms-chi-siamo .breadcrumbs {
+    padding: 0 30px;
+}
+.banner-cmspage {
+    margin-bottom: 100px;
+}
+.chisiamo-progettti {
+    margin: 0 auto 50px;
+    max-width: 1260px;
+    padding: 0 30px;
+}
+.chisiamo-progettti .box > h1 {
+    color: #466c99;
+    font-size: 45px;
+    margin-top: 30px;
+    text-transform: none;
+}
+.chisiamo-progettti .box p {
+    color: #575753;
+    line-height: 22px;
+}
+.cms-page-view .std p {
+    color: #333;
+    font-size: 14px;
+    line-height: 22px;
+}
+.cms-chi-siamo .col-main {
+    max-width: 100%;
+}
+
+/* Page Rassegna Stampa */
+
+.rastampa-grid {
+    margin-left: -12px;
+    margin-right: -12px;
+}
+.rastampa-grid::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.rastampa-grid .item {
+    float: left;
+    margin: 0;
+    padding: 12px;
+    width: 20%;
+}
+.rastampa-grid .item .box {
+    background-color: #ccc;
+    padding: 30px;
+}
+.rastampa-grid .item .box img {
+    width: 100%;
+}
+.rastampa-grid .item .box > a {
+    display: block;
+    position: relative;
+}
+.rastampa-grid .item .box span {
+    background-color: #fff;
+    border-radius: 50%;
+    color: #626262;
+    font-size: 21px;
+    height: 40px;
+    left: 50%;
+    line-height: 39px;
+    margin-left: -18px;
+    margin-top: -20px;
+    opacity: 0.65;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: scale(0);
+    transition: all 0.3s ease 0s;
+    width: 40px;
+}
+.rastampa-grid .item .box > a:hover > span {
+    transform: scale(1);
+}
+.rastampa-grid .item:nth-child(5n+1) {
+    clear: left;
+}
+
+/* Page Tecnologie */
+
+.tecnologie-list::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.cms-page-view .std .tecnologie-list > li {
+    float: left;
+    padding-bottom: 1px;
+    padding-right: 1px;
+    position: relative;
+    text-align: center;
+    width: 25%;
+}
+.std ul li {
+    margin: 0;
+}
+.tecnologie-list .box .overlay {
+    background-color: #fff;
+    bottom: 0;
+    display: flex;
+    height: 90px;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    right: 0;
+    transition: all 0.4s ease 0s;
+}
+.tecnologie-list .box > a:hover .overlay {
+    height: 150px;
+}
+.tecnologie-list .box .overlay h2 {
+    color: #393833;
+    display: block;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.1;
+    margin: auto;
+    padding: 0 10px;
+    width: 100%;
+}
+.std .tecnologie-list {
+    margin-bottom: 100px;
+}
+.cms-tecnologie .page-title > h1 {
+    margin-bottom: 20px;
+}
+
+/* Page WaterSaving */
+
+.watersaving-container {
+    margin-left: -20px;
+    margin-right: -20px;
+}
+.watersaving-container::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.watersaving-container > .col {
+    margin-bottom: 75px;
+    padding: 0 20px;
+    width: 50%;
+}
+.tecnologie-index-view .main-container {
+    max-width: 100%;
+    padding: 0;
+}
+.tecnologie-index-view .main-container {
+    max-width: 100%;
+    padding: 0;
+}
+.tecnologie-index-view .watersaving-container {
+    margin: 0 auto;
+    max-width: 1290px;
+    padding: 30px 15px;
+}
+.watersaving-container .page-title {
+    padding: 0 15px;
+}
+
+/* Page Design */
+
+.designer-grid {
+    background-color: #ccc;
+    margin-bottom: 50px;
+    padding: 30px;
+}
+.designer-grid h2 {
+    font-size: 16px;
+    text-transform: none;
+}
+.designer-grid .designer-info a {
+    display: block;
+    line-height: 1.5;
+    padding-right: 28px;
+    position: relative;
+}
+.designer-grid .designer-info a::after {
+    color: #466c99;
+    content: "\f18e";
+    font-family: FontAwesome;
+    font-size: 21px;
+    line-height: 1.25;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.designer-image {
+    display: block;
+    position: relative;
+}
+.designer-image::after {
+    background-color: rgba(0, 0, 0, 0.4);
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: scale(0);
+    transition: all 0.3s ease 0s;
+    width: 100%;
+}
+.designer-grid:hover .designer-image::after {
+    transform: scale(1);
+}
+.designer-container::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.designer-media {
+    float: left;
+    width: 45%;
+}
+.designer-img-box {
+    background-color: #ccc;
+    padding: 30px 130px;
+}
+.designer-view {
+    float: right;
+    width: 50%;
+}
+.designer-container {
+    margin: 0 0 50px;
+}
+.designer-prodotti {
+    background-color: #eee;
+    margin-bottom: -30px;
+    padding: 50px 0;
+    text-align: center;
+}
+.designer-prodotti h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 20px;
+}
+.designer-prodotti .box-img > a {
+    display: block;
+    position: relative;
+}
+.designer-prodotti .box-img > a::after {
+    background-color: rgba(0, 0, 0, 0.3);
+    content: "";
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: scale(0);
+    transition: all 0.3s ease 0s;
+    width: 100%;
+}
+.designer-prodotti li:hover .box-img > a::after {
+    transform: scale(1);
+}
+.designer-container > ul {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.designer-container > ul::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.designer-container ul li {
+    float: left;
+    margin: 0;
+    padding: 0 15px;
+    width: 25%;
+}
+.designer-grid .designer-info > h2 {
+    font-weight: 400;
+    letter-spacing: 0;
+    margin-bottom: 0;
+    margin-top: 30px;
+}
+.designer-container ul li:nth-child(4n+1) {
+    clear: left;
+}
+.designer-prodotti > ul {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.designer-prodotti > ul::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.designer-prodotti ul li {
+    float: left;
+    margin: 50px 0 0;
+    padding: 0 15px;
+    width: 33.3333%;
+}
+.designer-prodotti ul li:nth-child(3n+1) {
+    clear: left;
+}
+.designer-prodotti {
+    position: relative;
+}
+.designer-prodotti::before {
+    background-color: #eee;
+    content: "";
+    height: 100%;
+    left: -100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.designer-prodotti::after {
+    background-color: #eee;
+    content: "";
+    height: 100%;
+    position: absolute;
+    right: -100%;
+    top: 0;
+    width: 100%;
+}
+.wrapper {
+    overflow: hidden;
+}
+.designer-prodotti li .box h2 {
+    font-size: 19px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    margin: 0;
+}
+.designer-view > p {
+    color: #575753;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 20px;
+}
+.designer-prodotti > h1 {
+    color: #393833;
+    font-size: 42px;
+    margin-bottom: 0;
+}
+.designer-view > a {
+    font-size: 16px;
+    letter-spacing: 1px;
+}
+/* Page Realizza Detail */
+.realizza-view {
+    margin-bottom: 75px;
+}
+.realizza-view::after {
+    clear: both;
+    content: "";
+    display: table;
+}
+.realizza-media {
+    float: left;
+    width: 40%;
+}
+.realizza-info {
+    float: right;
+    margin-top: 40px;
+    width: 50%;
+}
+.realizza-media .box-img {
+    background-color: #ccc;
+    padding: 30px 30px 40px;
+}
+#mw_gallery .realizza-info .padding-large {
+    margin-bottom: 60px;
+}
+.realizza-info > label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+.realizza-gallery {
+    background-color: #eee;
+    padding: 65px 0;
+    position: relative;
+}
+.realizza-gallery .title {
+    font-size: 41px;
+    margin-bottom: 50px;
+    text-align: center;
+    text-transform: uppercase;
+}
+.realizza-gallery::before {
+    background-color: #eee;
+    content: "";
+    height: 100%;
+    left: -100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+.realizza-gallery::after {
+    background-color: #eee;
+    content: "";
+    height: 100%;
+    position: absolute;
+    right: -100%;
+    top: 0;
+    width: 100%;
+}
+.realizza-gallery .owl-carousel .item a::after {
+    background-color: rgba(0, 0, 0, 0.4);
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    transform: scale(0);
+    transition: all 0.3s ease 0s;
+    width: 100%;
+}
+.realizza-gallery .owl-carousel .item a:hover:after {
+    transform: scale(1);
+}
+
+/* Responsive */
+
+@media (max-width: 1024px) {
+    .banner-cmspage .box-overlay {
+        width: 100%;
+    }
+    .chisiamo-lasede {padding: 50px 0;}
+    .chisiamo-lasede .box h1, .chisiamo-progettti .box > h1 {
+        margin: 0;
+    }
+    .tecnologie-list .box .overlay h2 {
+        font-size: 15px;
+    }
+    .designer-container ul li {
+        width: 33.3333%;
+    }
+    .designer-container ul li:nth-child(4n+1) {
+        clear: none;
+    }
+    .designer-container ul li:nth-child(3n+1) {
+        clear: left;
+    }
+    .designer-media, .designer-view {
+        float: none;
+        margin: 0 auto;
+        width: 75%;
+    }
+    .designer-img-box {
+        margin: 0 auto;
+        width: 75%;
+    }
+    .gallery-container.album li.item {
+        padding: 50px 30px;
+    }
+    
+}
+
+@media (max-width: 959px) {
+    .banner-cmspage h1 {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+    .banner-cmspage .box-overlay {
+        padding: 30px;
+    }
+    .cms-page-view .std p {
+        font-size: 13px;
+    }
+    .chisiamo-progettti .box > h1 {
+        font-size: 30px;
+    }
+    .rastampa-grid .item  {
+        width: 33.3333%;
+    }
+    .rastampa-grid .item:nth-child(5n+1) {
+        clear: none;
+    }
+    .rastampa-grid .item:nth-child(3n+1) {
+        clear: left;
+    }
+    .realizza-media {
+        padding-right: 15px;
+        width: 50%;
+    }
+    .realizza-info {
+        margin-top: 15px;
+        padding-left: 15px;
+    }
+    
+}
+
+@media (max-width: 768px) {
+    .banner-cmspage .container-overlay {
+        padding: 0;
+    }
+    .banner-cmspage .box-overlay {
+        padding: 20px;
+        opacity: 0.75;
+    }
+    .cms-page-view .std p {font-size: 12px;}
+    .banner-cmspage h1 {font-size: 24px;}
+    .chisiamo-lasede .box-left {
+        float: none;
+        margin: 0;
+        width: 100%;
+    }
+    .chisiamo-lasede .box-right {
+        float: none;
+        width: 100%;
+    }
+    .chisiamo-progettti .box-left {
+        float: none;
+        margin-bottom: 30px;
+        width: 100%;
+    }
+    .chisiamo-progettti .box-right {
+        float: none;
+        width: 100%;
+    }
+    .cms-page-view .std .tecnologie-list > li {
+        width: 50%;
+    }
+    .watersaving-container > .col {
+        width: 100%;
+    }
+    .designer-container ul li {
+        width: 50%;
+    }
+    .designer-container ul li:nth-child(4n+1) {
+        clear: none;
+    }
+    .designer-container ul li:nth-child(3n+1) {
+        clear: none;
+    }
+    .designer-container ul li:nth-child(2n+1) {
+        clear: left;
+    }
+    .designer-img-box {padding-left: 50px;padding-right: 50px}
+    .designer-prodotti ul li {
+        width: 50%;
+    }
+    .designer-prodotti ul li:nth-child(3n+1) {
+        clear: none;
+    }
+    .designer-prodotti ul li:nth-child(2n+1) {
+        clear: left;
+    }
+    .gallery-container.album li.item {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .gallery-container.album li.item h2 {
+        font-size: 15px;
+    }
+    
+}
+
+@media (max-width: 640px) {
+    .banner-cmspage .section .box-overlay p {
+        display: none;
+    }
+    .banner-cmspage .container-overlay {
+        text-align: center;
+        width: 85%;
+    }
+    .rastampa-grid .item {
+        width: 50%;
+    }
+    .rastampa-grid .item:nth-child(3n+1) {
+        clear: none;
+    }
+    .rastampa-grid .item:nth-child(2n+1) {
+        clear: left;
+    }
+    .realizza-media {
+        float: none;
+        margin-bottom: 20px;
+        padding-right: 0;
+        width: 100%;
+    }
+    .realizza-info {
+        float: none;
+        margin-top: 15px;
+        padding-left: 0;
+        width: 100%;
+    }
+    
+}
+
+@media (max-width: 479px) {
+    .rastampa-grid {
+        padding: 0 15px;
+    }
+    .rastampa-grid .item {
+        width: 100%;
+    }
+    .cms-page-view .std .tecnologie-list > li {
+        width: 100%;
+    }
+    .std .tecnologie-list {
+        margin-bottom: 0;
+    }
+    .designer-container ul li {
+        width: 100%;
+    }
+    .designer-media, .designer-view {
+        width: 100%;
+    }
+    .designer-prodotti ul li {
+        width: 100%;
+    }
+    .gallery-container.album li.item {
+        padding: 15px;
+        width: 100%;
+    }
+    
+}
+
+@media (max-width: 400px) {
+    .designer-img-box {
+        padding: 30px;
+        width: 100%;
+    }
+    
+}
+
+

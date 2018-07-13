@@ -1,0 +1,25 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php if ($images = $this->getImageCollection()): ?>
+
+	<div class="blog_view" id="blog_view">          
+            <div class="clearfix" style="max-width: 991px;">
+                <div id="image-gallery" class="gallery list-unstyled cS-hidden">
+					<?php $it = 0; foreach($images as $image): ?>
+				 	<a class="addpen" data-lightbox="example-set" data-thumb="<?php echo $image->getFullSizeImage() ?>" href="<?php echo $image->getFullSizeImage() ?>"> 
+						<img class="example-image" src="<?php echo $image->getFullSizeImage() ?>" />
+						
+				 	</a>
+
+					<?php ++$it; endforeach; ?>
+                </div>
+            </div>
+	</div>
+<?php endif; ?>
+

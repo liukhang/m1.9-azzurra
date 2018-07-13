@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<widgets>
+    <gugliotti_news type="gugliotti_news/widgetlist" translate="name description" module="gugliotti_news">
+        <name>Latest News List</name>
+        <description>Displays a list of latest news on desired position</description>
+        <parameters>
+            <number_of_news translate="label">
+                <label>Number of news to be displayed</label>
+                <visible>1</visible>
+                <required>1</required>
+                <type>text</type>
+            </number_of_news>
+            <template>
+                <required>1</required>
+                <visible>1</visible>
+                <label>Template</label>
+                <type>select</type>
+                <value>gugliotti_news/widgets/latest-news.phtml</value>
+                <values>
+                    <default translate="label">
+                        <value>gugliotti_news/widgets/latest-news.phtml</value>
+                        <label>Latest News</label>
+                    </default>
+                </values>
+            </template>
+        </parameters>
+    </gugliotti_news>
+</widgets>

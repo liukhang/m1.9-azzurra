@@ -1,0 +1,142 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
+/**
+ * Product media data template
+ *
+ * @see Mage_Catalog_Block_Product_View_Media
+ */
+
+/* @var $this Mage_Catalog_Block_Product_View_Media */
+?>
+<?php
+    $_product = $this->getProduct();
+    $_helper = $this->helper('catalog/output');
+?>
+<div class="product-image product-image-zoom">
+    <div class="product-image-gallery">
+        <a id="image-main" class="gallery-image visible" href="<?php echo $this->helper('catalog/image')->init($_product, 'image') ?>" data-lightbox="set"><img class="set-image" src="<?php echo $this->helper('catalog/image')->init($_product, 'image') ?>" alt=""/>
+            <span class="zoom_product"><i class="fas fa-search"></i><br><span><?php echo __('zoom') ?></span></span>
+        </a>
+
+        <?php $i=0; foreach ($this->getGalleryImages() as $_image): ?>
+            <?php if ($this->isGalleryImageVisible($_image)): ?>
+                <a id="image-<?php echo $i; ?>" class="gallery-image" href="<?php echo $this->getGalleryImageUrl($_image); ?>" data-lightbox="set"><img class="set-image" src="<?php echo $this->getGalleryImageUrl($_image); ?>" alt=""/>
+                    <span class="zoom_product"><i class="fas fa-search"></i><br><span><?php echo __('zoom') ?></span></span>
+                </a>
+            <?php endif; ?>
+        <?php $i++; endforeach; ?>
+
+    </div>
+</div>
+
+
+<?php /*
+<?php if (count($this->getGalleryImages()) > 0): ?>
+<div class="more-views">
+    <h2><?php echo $this->__('More Views') ?></h2>
+    <ul class="product-image-thumbs">
+    <?php $i=0; foreach ($this->getGalleryImages() as $_image): ?>
+        <?php if ($this->isGalleryImageVisible($_image)): ?>
+        <li>
+            <a class="thumb-link" href="#" title="<?php echo $this->escapeHtml($_image->getLabel()) ?>" data-image-index="<?php echo $i; ?>">
+                <img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(75); ?>"
+                     width="75" height="75" alt="<?php echo $this->escapeHtml($_image->getLabel()) ?>" />
+            </a>
+        </li>
+        <?php endif; ?>
+    <?php $i++; endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>
+*/ ?>
+
+
+<?php echo $this->getChildHtml('after'); ?>
+
+<?php if (count($this->getGalleryImages()) > 0): ?>
+<div class="product_gallery_content">
+    <h2><?php echo $this->__('Photogallery') ?></h2>
+    <div class="product_gallery_content animatedParent">
+        <div class="product_gallery_slide">
+            <ul id="product_gallery_slide" class="owl-carousel">
+            <?php $i=0; foreach ($this->getGalleryImages() as $_image): ?>
+                <?php if ($this->isGalleryImageVisible($_image)): ?>
+                <li class="delay-100 animated fadeIn slow">
+                    <img src="<?php echo $this->helper('catalog/image')->init($this->getProduct(), 'thumbnail', $_image->getFile())->resize(335,225); ?>"
+                            alt="<?php echo $this->escapeHtml($_image->getLabel()) ?>" />
+                </li>
+                <?php endif; ?>
+            <?php $i++; endforeach; ?>
+            </ul>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+    <script type="text/javascript">
+        jQuery('.product_gallery_content #product_gallery_slide').owlCarousel({
+            loop: false,
+            navSpeed: 1000,
+            smartSpeed:1000,
+            margin: 40,
+            autoplay:false,
+            nav:true,
+            navText:['<a href="javascript:void(0)"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></a>','<a href="javascript:void(0)"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></a>'],
+            responsiveClass: false,
+            responsive: {
+                0: {
+                    items: 1,
+                    // autoplay:true,
+                    nav: true
+                },
+                361: {
+                    items: 2,
+                    // autoplay:true,
+                    nav: true
+                },
+                641: {
+                    items: 3,
+                    // autoplay:true,
+                    nav: true
+                },
+                768: {
+                    items: 3,
+                    // nav: true,
+                    loop: false,
+                    // autoplay:true,
+                    margin: 20
+                },
+                1024: {
+                    items: 4,
+                    nav: true,
+                    loop: false,
+                    // autoplay:true,
+                    dots: false,
+                    margin: 20
+                }               
+            }
+        });
+    </script>

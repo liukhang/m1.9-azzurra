@@ -1,0 +1,892 @@
+<?php
+session_start();
+$OptionCountry = $this->getCountry();
+$_filter1 = Mage::getStoreConfig('storelocator/setting/enabled1');
+$_filter2 = Mage::getStoreConfig('storelocator/setting/enabled2');
+$_filter3 = Mage::getStoreConfig('storelocator/setting/enabled3');
+$_filter4 = Mage::getStoreConfig('storelocator/setting/enabled4');
+$_filter5 = Mage::getStoreConfig('storelocator/setting/enabled5');
+?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <title>Pazzey's Store Locator</title>
+	<?php $height = '500'; 
+		  $height = $height - 200; ?>
+    
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('md/storelocator/jquery-1.11.0.min.js'); ?>"></script>
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('md/storelocator/jSelect.js'); ?>"></script>
+	
+	<script type="text/javascript">
+	jQuery.noConflict();
+	jQuery( document ).ready(function( $ ) {
+		jQuery(function(){
+			
+			jQuery("select#city").jSelect({listwidth:'150px',editable:true});
+			jQuery("select#sort").jSelect({listwidth:'150px',editable:true});
+			
+			
+		})
+	})
+	</script>	
+    <script type="text/javascript">
+    //<![CDATA[
+    var map;
+    var markers = [];
+	var side_bar_html = "";
+    var infoWindow;
+    var locationSelect;
+
+    function initMap() {
+      map = new google.maps.Map(document.getElementById("map"), {
+        center: new google.maps.LatLng(41.87194, 12.567379999999957),
+        zoom: 4,
+        mapTypeId: 'roadmap',
+        mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
+      });
+      infoWindow = new google.maps.InfoWindow();
+      locationSelect = document.getElementById("locationSelect");
+      locationSelect.onchange = function() {
+        var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
+        if (markerNum != "none"){
+          google.maps.event.trigger(markers[markerNum], 'click');
+        }
+      };
+	  searchLocations(2);
+   }
+
+   function searchLocations(tm) {
+     var address = document.getElementById("addressInput").value;
+	 var country = jQuery('#city').val();
+     var geocoder = new google.maps.Geocoder();
+     geocoder.geocode({address: address}, function(results, status) {
+		if (tm == "3") { 
+			searchLocationsNear('1234',tm);
+		} else {
+       if (status == google.maps.GeocoderStatus.OK) {
+		jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getlist');?>",
+			   data: 'lat=' + 0 + '&lng=' +0,
+			   success:function(data){
+					jQuery('#selectbox').html(data);
+			   }
+			  });
+		
+			 jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getfinter');?>",
+			   data: 'country=' + country + '&lat=' + results[0].geometry.location.lat() + '&lng=' +results[0].geometry.location.lng(),
+			   success:function(data){
+					jQuery('#finter').html(data);
+			   }
+			  });
+        searchLocationsNear(results[0].geometry.location,tm);
+       } else {
+	   alert('please select address');
+        // jQuery('#addressInput').val();
+		 jQuery('#result_search').hide();
+       }
+       }	   
+     });
+	 jQuery('#result_search').hide();
+   }   
+  
+   function fillterLocations(tm,tm1,tm2,tm3,tm4,tm5,issearch) {
+     var address = document.getElementById("addressInput").value;
+     var geocoder = new google.maps.Geocoder();
+     geocoder.geocode({address: address}, function(results, status) {
+		if (tm == "3") { 
+			fillterLocationsNear('1234',tm,tm1,tm2,tm3,tm4,tm5);
+		} else {
+       if (status == google.maps.GeocoderStatus.OK) {
+		if((tm1!='' || tm2!='' || tm3!='' || tm4!='' || tm5!='')&& issearch!=1){
+		var country = document.getElementById('city').value;
+			 jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getfinter');?>",
+			   data: 'program_products=' + tm1 + '&special_features=' + tm2 + '&category_dealer=' + tm3 + '&filter4=' + tm4 + '&filter5=' + tm5 + '&country=' + country + '&lat=' + results[0].geometry.location.lat() + '&lng=' +results[0].geometry.location.lng(),
+			   success:function(data){
+					jQuery('#finter').html(data);
+			   }
+			  });
+			}
+	   if(jQuery('#city').val()=='' && issearch==1)
+	   {
+			jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getlist');?>",
+			   data: 'lat=' + results[0].geometry.location.lat() + '&lng=' +results[0].geometry.location.lng(),
+			   success:function(data){
+					jQuery('#selectbox').html(data);
+					// jQuery("select#city").jSelect({listwidth:'150px',editable:true});
+			   }
+			  });
+			 var country = document.getElementById('city').value;
+			 jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getfinter');?>",
+			   data: 'country=' + country + '&lat=' + results[0].geometry.location.lat() + '&lng=' +results[0].geometry.location.lng(),
+			   success:function(data){
+					jQuery('#finter').html(data);
+			   }
+			   });
+		}
+        fillterLocationsNear(results[0].geometry.location,tm,tm1,tm2,tm3,tm4,tm5);
+       } else {
+		// alert('please select address');
+		var search='<?php echo Mage::getSingleton('core/session')->getSearchvalue() ?>';
+         jQuery('#addressInput').val(search);
+		 jQuery('#result_search').hide();
+       }
+       }	   
+     });
+	 jQuery('#result_search').hide();
+   }   
+  
+
+   function searchLocationsNear(center,tm) {
+     clearLocations(); 	 
+     var radius = document.getElementById('radiusSelect').value;
+	 var country = document.getElementById('addressInput').value;
+	 var city2 = '';
+	 var sort = document.getElementById('sort').value;
+	 if (tm == "4") {
+		var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&lat=' + center.lat() + '&lng=' +center.lng() + '&radius=' + radius + '&city=' + city2;
+	 }else
+	 if (tm == "3") {
+		var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&lat=21.5433333&lng=39.17277779999995&radius=16&city='+ city2;
+	 } else {
+		 if (tm == '2'){
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort + '&country=' + country +'&lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius + '&city=' + city2;		
+		 } else {
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius + '&city=' + city2;
+		 }
+	 }
+     downloadUrl(searchUrl, function(data) {
+       var xml = parseXml(data);
+       var markerNodes = xml.documentElement.getElementsByTagName("marker");
+       var bounds = new google.maps.LatLngBounds();
+       for (var i = 0; i < markerNodes.length; i++) {
+         var name = markerNodes[i].getAttribute("name");
+         var email = markerNodes[i].getAttribute("email");
+         var phone = markerNodes[i].getAttribute("phone");
+         var address = markerNodes[i].getAttribute("address");	 
+         var distance = parseFloat(markerNodes[i].getAttribute("distance"));
+		 var moreinfo = markerNodes[i].getAttribute("moreinfo");
+         var latlng = new google.maps.LatLng(
+              parseFloat(markerNodes[i].getAttribute("lat")),
+              parseFloat(markerNodes[i].getAttribute("lng")));
+		
+		var mydistance = markerNodes[i].getAttribute("mydistance");
+		
+		var icon=i;
+
+         createOption(name, distance, i);
+         createMarker(latlng, name, address, moreinfo,email,phone,mydistance,icon);
+		 // center=new google.maps.LatLng(parseFloat('14.058324'),parseFloat('108.277199'));
+         bounds.extend(center);
+       }
+       map.fitBounds(bounds);
+	   radius= <?php echo  Mage::getStoreConfig('storelocator/general/radius') ?>;
+	   if(radius >= 0 && radius <0,02){map.setZoom(20);}
+	   if(radius >= 0,02 && radius <0,05){map.setZoom(19);}
+	   if(radius >= 0,05 && radius <0,1){map.setZoom(18);}
+	   if(radius >= 0,1 && radius <0,2){map.setZoom(17);}
+	   if(radius >= 0,2 && radius <0,5){map.setZoom(16);}
+	   if(radius >= 0,5 && radius <1){map.setZoom(15);}
+	   if(radius >= 1 && radius <2){map.setZoom(14);}
+	   if(radius >= 2 && radius <5){map.setZoom(13);}
+	   if(radius >= 5 && radius <10){map.setZoom(12);}
+	   if(radius >= 10 && radius <20){map.setZoom(11);}
+	   if(radius >= 20 && radius <50){map.setZoom(10);}
+	   if(radius >= 50 && radius <100){map.setZoom(10);}
+	   if(radius >= 100 && radius <200){map.setZoom(8);}
+	   if(radius >= 200 && radius <500){map.setZoom(7);}
+	   if(radius >= 500 && radius <1000){map.setZoom(6);}
+	   if(radius >= 1000 && radius <2000){map.setZoom(5);}
+	   if(radius >= 2000 && radius <5000){map.setZoom(4);}
+	   if(radius >= 5000 && radius <10000){map.setZoom(3);}
+	   if(radius >= 10000){map.setZoom(2);}
+	   if (side_bar_html == "") {
+	   document.getElementById("side_bar").innerHTML = '<strong>No Matches Found</strong>';}
+	   else {
+	   document.getElementById("side_bar").innerHTML = '<div class="heading clearfix animated unselectable" style=" ">Stores<div class="hide"><div class="icon black" style=" "></div><div class="icon grey" style="display:none"></div></div></div><ul>' + side_bar_html + '</ul>';}
+      });
+    }
+	function fillterLocationsNear(center,tm,tm1,tm2,tm3,tm4,tm5) {
+     clearLocations(); 	 
+     var radius = document.getElementById('radiusSelect').value;
+	 var country = document.getElementById('addressInput').value;
+	 var city2 = document.getElementById('city').value;
+	 var sort = document.getElementById('sort').value;
+	 if (tm == "4") {
+		var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&tm1=' + tm1 +'&tm2=' + tm2 +'&tm3=' + tm3 +'&tm4=' + tm4 +'&tm5=' + tm5 +'&lat=' + center.lat() + '&lng=' +center.lng() + '&radius=' + radius + '&city=' + city2;
+	 }else
+	 if (tm == "3") {
+		var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&lat=21.5433333&lng=39.17277779999995&radius=16&city='+ city2;
+	 } else {
+		 if (tm == '2'){
+			valuect = document.getElementById("city").value;
+			valuect = valuect.replace(" ", "");
+			valuect = valuect.replace(" ", "");
+			valuect = valuect.replace(" ", "");
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&tm1=' + tm1 +'&tm2=' + tm2 +'&tm3=' + tm3 +'&tm4=' + tm4 +'&tm5=' + tm5 + '&country=' + country +'&lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius + '&city=' + valuect;		
+		 } else {
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map2/index?tm=' + tm +'&sort=' + sort +'&tm1=' + tm1 +'&tm2=' + tm2 +'&tm3=' + tm3 +'&tm4=' + tm4 +'&tm5=' + tm5 +'&lat=' + center.lat() + '&lng=' + center.lng() + '&radius=' + radius + '&city=' + city2;
+		 }
+	 }
+     downloadUrl(searchUrl, function(data) {
+		
+       var xml = parseXml(data);
+       var markerNodes = xml.documentElement.getElementsByTagName("marker");
+       var bounds = new google.maps.LatLngBounds();
+	   count = 0;
+       for (var i = 0; i < markerNodes.length; i++) {
+		
+         var name = markerNodes[i].getAttribute("name");
+         var email = markerNodes[i].getAttribute("email");
+         var phone = markerNodes[i].getAttribute("phone");
+         var address = markerNodes[i].getAttribute("address");	 
+         var distance = parseFloat(markerNodes[i].getAttribute("distance"));
+		 var moreinfo = markerNodes[i].getAttribute("moreinfo");
+         var latlng = new google.maps.LatLng(
+              parseFloat(markerNodes[i].getAttribute("lat")),
+              parseFloat(markerNodes[i].getAttribute("lng")));
+		
+		var mydistance = markerNodes[i].getAttribute("mydistance");
+		radius= <?php echo  Mage::getStoreConfig('storelocator/general/radius') ?>;
+		var icon=i;
+
+         createOption(name, distance, i);
+         createMarker(latlng, name, address, moreinfo,email,phone,mydistance,icon);
+		  var mydistance_new = mydistance;
+		  
+		  mydistance_new = mydistance_new.split(',');
+		 mydistance_new = mydistance_new[0].replace('.','');
+		 mydistance_new = parseInt(mydistance_new); 
+		 
+		 if( radius  > mydistance_new){
+			
+			bounds.extend(center);
+			count = 1;
+		 } 
+       }
+		 if(count==0){
+			bounds.extend(latlng);
+		 }
+       map.fitBounds(bounds);
+	   
+	   if(radius >= 0 && radius <0,02){map.setZoom(20);}
+	   if(radius >= 0,02 && radius <0,05){map.setZoom(19);}
+	   if(radius >= 0,05 && radius <0,1){map.setZoom(18);}
+	   if(radius >= 0,1 && radius <0,2){map.setZoom(17);}
+	   if(radius >= 0,2 && radius <0,5){map.setZoom(16);}
+	   if(radius >= 0,5 && radius <1){map.setZoom(15);}
+	   if(radius >= 1 && radius <2){map.setZoom(14);}
+	   if(radius >= 2 && radius <5){map.setZoom(13);}
+	   if(radius >= 5 && radius <10){map.setZoom(12);}
+	   if(radius >= 10 && radius <20){map.setZoom(11);}
+	   if(radius >= 20 && radius <50){map.setZoom(10);}
+	   if(radius >= 50 && radius <100){map.setZoom(10);}
+	   if(radius >= 100 && radius <200){map.setZoom(8);}
+	   if(radius >= 200 && radius <500){map.setZoom(7);}
+	   if(radius >= 500 && radius <1000){map.setZoom(6);}
+	   if(radius >= 1000 && radius <2000){map.setZoom(5);}
+	   if(radius >= 2000 && radius <5000){map.setZoom(4);}
+	   if(radius >= 5000 && radius <10000){map.setZoom(3);}
+	   if(radius >= 10000){map.setZoom(2);}
+	   if (side_bar_html == "") {
+	   document.getElementById("side_bar").innerHTML = '<strong>No Matches Found</strong>';}
+	   else {
+	   document.getElementById("side_bar").innerHTML = '<div class="heading clearfix animated unselectable" style=" ">Stores<div class="hide"><div class="icon black" style=" "></div><div class="icon grey" style="display:none"></div></div></div><ul>' + side_bar_html + '</ul>';}
+      });
+    }
+  
+    function createMarker(latlng, name, address, moreinfo,email,phone,mydistance,icon) {
+	  
+      // var html = "<b>" + name + "</b> <br/>" + address + "<br/>" + moreinfo;
+      var html = '<div style="background: none repeat scroll 0 0 #FFFFFF;border: 0 solid #FFFFFF;width: 100%;margin-left:1px ">';
+	html = html + '<div style="background: none repeat scroll 0 0 #E3511A;height: 2px;overflow: visible;width: auto;"><div style="background: url(\'../images/store-details-top-bar.png\') no-repeat scroll 0 0 rgba(0, 0, 0, 0);height: 18px;position: absolute;top: 1px;width: 100%;"></div></div>';
+	html = html + '<div style="-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;background: none repeat scroll 0 0 #F2F2F2;border-color: #E5E5E5;border-image: none;border-left: 1px solid #FFFFFF;border-style: none none solid solid;border-width: 0 0 1px 1px;height: 36px;position: relative;border-left:none;border-right:none">';
+	html = html + '<div id="tab1" onclick="changetab(\'tab1content\',\'tab1\')" class="tabstyle" style=" background: #fff;">';
+	html = html + '<div style="color: #000000;font-weight: normal;line-height: 100%;margin-top: -12px;text-align: left;text-decoration: none;">Information Store</div>';
+	html = html + '</div><div id="tab2" onclick="changetab(\'tab2content\',\'tab2\')" class="tabstyle">';
+	html = html + '<div  style=" color: #000000;font-size: 12px;font-weight: normal;letter-spacing: 1px;line-height: 100%;margin-top: -12px;text-align: left;text-decoration: none;">Opening Hours</div>';
+	html = html + '</div></div><div class="content_info">';
+	html = html + '<div><h2 style="color: #000000;font-size: 14px;font-weight: bold;line-height: 21px;margin: 22px 0 0 0;text-align: c;text-decoration: none;padding: 0 0 0 15px">' + name + '</h2></div>';
+	html = html + '<div id="tab1content" class="tabcontent" style="padding: 15px 15px 0;color: #000000;float: left;font-family: CustomAdiHausPSRegular,arial,helvetica,sans-serif;font-size: 12px;font-weight: normal;line-height: 17px;margin: 0;text-align: left;text-decoration: none;"><div>' + address + '</div><div>'+'Phone: ' + phone + '</div><div>'+'Email/Website: ' + email + '</div><div style="float:left;width: 49%;"></div></div>';
+	
+	html = html + '<div id="tab2content" class="tabcontent" style="display:none;padding: 15px;color: #000000;float: left;font-family: CustomAdiHausPSRegular,arial,helvetica,sans-serif;font-size: 14px;font-weight: normal;line-height: 17px;margin: 0;text-align: left;text-decoration: none;">';
+	html = html + moreinfo + '</div></div></div>';
+	  var cleanaddy = address.replace(/<\/?[^>]+(>|$)/g, "");
+	  // html +='<form action="http://maps.google.com/maps" method="get"" target="_blank">'+
+           // '<INPUT value="Get Directions" TYPE="SUBMIT">' +
+           // '<input type="hidden" name="daddr" value="' + cleanaddy +
+           // '"/>';
+	  var shadow = new google.maps.MarkerImage('<?php echo $this->getSkinUrl('md/storelocator/bg_br.png'); ?>', new google.maps.Size(0, 0) );
+	  
+	  
+      var marker = new google.maps.Marker({
+        map: map,
+		shadow: shadow,
+        position: latlng
+      });
+      google.maps.event.addListener(marker, 'click', function() {
+        infoWindow.setContent(html);
+        infoWindow.open(map, marker);
+      });
+      markers.push(marker);
+	  
+	  var image='<?php echo $this->getSkinUrl('md/storelocator/icon/'); ?>'+icon+'.png';
+	  marker.setIcon(image);
+    side_bar_html += '<li class="store_item"><div class="whiteLine"></div><div class="marker" ><div class="list-marker performance" style="background: url('+image+') no-repeat"></div><p><a href="javascript:myclick(' + (markers.length-1) + ')">'+ mydistance +' Km'+'</a></p></div><div class="text"><a href="javascript:myclick(' + (markers.length-1) + ')"><h2>' + name + '</h2></a><p><a href="javascript:myclick(' + (markers.length-1) + ')">'+'Address: '+ address +'</a></p><p><a href="javascript:myclick(' + (markers.length-1) + ')">'+'tel.: '+ phone +'</a></p><div class="tagList"></div><div class="dottedLine"></div></div></li>';
+    }
+function myclick(i) {
+  google.maps.event.trigger(markers[i], "click");
+}
+
+    function createOption(name, distance, num) {
+      var option = document.createElement("option");
+      option.value = num;
+      option.innerHTML = name + "(" + distance.toFixed(1) + ")";
+      locationSelect.appendChild(option);
+    }
+
+    function downloadUrl(url, callback) {
+      var request = window.ActiveXObject ?
+          new ActiveXObject('Microsoft.XMLHTTP') :
+          new XMLHttpRequest;
+
+      request.onreadystatechange = function() {
+        if (request.readyState == 4) {
+          request.onreadystatechange = doNothing;
+          callback(request.responseText, request.status);
+        }
+      };
+
+      request.open('GET', url, true);
+      request.send(null);
+    }
+
+    function parseXml(str) {
+      if (window.ActiveXObject) {
+        var doc = new ActiveXObject('Microsoft.XMLDOM');
+        doc.loadXML(str);
+        return doc;
+      } else if (window.DOMParser) {
+        return (new DOMParser).parseFromString(str, 'text/xml');
+      }
+    }
+
+    function doNothing() {}
+
+    //Nothing here>
+	function changetab(tm,tm2){
+		jQuery('.tabstyle').attr('style','');
+		jQuery('#' + tm2).attr('style','background: #fff;border-right: 1px solid #E5E5E5;border-left: 1px solid #E5E5E5');
+		jQuery('#tab1content').addClass('hidencontenttab');
+		jQuery('#tab2content').addClass('hidencontenttab');
+		jQuery('#' + tm).removeClass('hidencontenttab');
+		jQuery('#' + tm).show();
+	}
+	function changecity(tm){
+		
+			var program_products = '';
+			var special_features = '';
+			var category_dealer = '';
+			var filter4 = '';
+			var filter5 = '';
+			fillterLocations(2,program_products,special_features,category_dealer,filter4,filter5,0);
+				
+			var country = document.getElementById('city').value;
+			 jQuery.ajax({
+			 type: "POST",
+			   url:"<?php echo $this->getUrl('storelocator/location/getfinter');?>",
+			  data: 'program_products=' + program_products + '&special_features=' + special_features + '&category_dealer=' + category_dealer + '&filter4=' + filter4 + '&country=' + country,
+			   success:function(data){
+					jQuery('#finter').html(data);
+			   }
+			  });
+		
+	}
+	jQuery( document ).ready(function( $ ) {
+		jQuery('#addressInput').keyup(function(e) {
+			if(e.keyCode == 13) {
+				filter1=<?php echo $_filter1 ?>;
+				filter2=<?php echo $_filter2 ?>;
+				filter3=<?php echo $_filter3 ?>;
+				filter4=<?php echo $_filter4 ?>;
+				filter5=<?php echo $_filter5 ?>;
+					if(filter1==1){
+						var program_products = document.getElementById('program_products').value;
+					}
+					else
+					{
+						var program_products = '';
+					}
+					if(filter2==1){
+						var special_features = document.getElementById('special_features').value;
+					}
+					else
+					{
+						var special_features = '';
+					}
+					if(filter3==1){
+						var category_dealer = document.getElementById('category_dealer').value;
+					}
+					else
+					{
+						var category_dealer = '';
+					}
+					if(filter4==1){
+						var filter4 = document.getElementById('filter4').value;
+					}
+					else
+					{
+						var filter4 = '';
+					}
+					if(filter5==1){
+						var filter5 = document.getElementById('filter5').value;
+					}
+					else
+					{
+						var filter5 = '';
+					}
+				
+				fillterLocations(2,program_products,special_features,category_dealer,filter4,filter5,1);
+			}
+		});
+	})
+			
+		
+		// finter
+		function changeprogram(){
+			var program_products = document.getElementById('program_products').value;
+			filter2=<?php echo $_filter2 ?>;
+			filter3=<?php echo $_filter3 ?>;
+			filter4=<?php echo $_filter4 ?>;
+			filter5=<?php echo $_filter5 ?>;
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+			
+			
+			  fillterLocations(4,program_products,special_features,category_dealer,filter4,filter5,0);
+			}
+		function changecategory(){
+			var category_dealer = document.getElementById('category_dealer').value;
+			filter1=<?php echo $_filter1 ?>;
+			filter2=<?php echo $_filter2 ?>;
+			filter4=<?php echo $_filter4 ?>;
+			filter5=<?php echo $_filter5 ?>;
+			if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+			  fillterLocations(4,program_products,special_features,category_dealer,filter4,filter5,0);
+			}
+		function changespecial(){
+			var special_features = document.getElementById('special_features').value;
+			filter1=<?php echo $_filter1 ?>;
+			filter3=<?php echo $_filter3 ?>;
+			filter4=<?php echo $_filter4 ?>;
+			filter5=<?php echo $_filter5 ?>;
+			if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+			  fillterLocations(4,program_products,special_features,category_dealer,filter4,filter5,0);
+		}
+		function changefilter4(){
+			var filter4 = document.getElementById('filter4').value;
+			filter1=<?php echo $_filter1 ?>;
+			filter2=<?php echo $_filter2 ?>;
+			filter3=<?php echo $_filter3 ?>;
+			filter5=<?php echo $_filter5 ?>;
+			if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+			  fillterLocations(4,program_products,special_features,category_dealer,filter4,filter5,0);
+		}
+		function changefilter5(){
+			var filter5 = document.getElementById('filter5').value;
+			filter1=<?php echo $_filter1 ?>;
+			filter2=<?php echo $_filter2 ?>;
+			filter3=<?php echo $_filter3 ?>;
+			filter4=<?php echo $_filter4 ?>;
+			if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			  fillterLocations(4,program_products,special_features,category_dealer,filter4,filter5,0);
+		}
+		//end
+
+	 function changevalue(e)
+	 {
+		var program_products = '';
+		var special_features = '';
+		var category_dealer = '';
+		var filter4 = '';
+		var filter5 = '';
+		jQuery('#addressInput').val(e);
+		jQuery('#result_search').hide();
+		 fillterLocations(2,program_products,special_features,category_dealer,filter4,0);
+	 }
+	 function search()
+	 {
+		filter1=<?php echo $_filter1 ?>;
+		filter2=<?php echo $_filter2 ?>;
+		filter3=<?php echo $_filter3 ?>;
+		filter4=<?php echo $_filter4 ?>;
+		filter5=<?php echo $_filter5 ?>;
+			if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+		
+		fillterLocations(2,program_products,special_features,category_dealer,filter4,filter5,1);
+			
+	 }
+	 function changesort()
+	 {
+		filter1=<?php echo $_filter1 ?>;
+		filter2=<?php echo $_filter2 ?>;
+		filter3=<?php echo $_filter3 ?>;
+		filter4=<?php echo $_filter4 ?>;
+		filter5=<?php echo $_filter5 ?>;
+		if(filter1==1){
+				var program_products = document.getElementById('program_products').value;
+			}
+			else
+			{
+				var program_products = '';
+			}
+			if(filter2==1){
+				var special_features = document.getElementById('special_features').value;
+			}
+			else
+			{
+				var special_features = '';
+			}
+			if(filter3==1){
+				var category_dealer = document.getElementById('category_dealer').value;
+			}
+			else
+			{
+				var category_dealer = '';
+			}
+			if(filter4==1){
+				var filter4 = document.getElementById('filter4').value;
+			}
+			else
+			{
+				var filter4 = '';
+			}
+			if(filter5==1){
+				var filter5 = document.getElementById('filter5').value;
+			}
+			else
+			{
+				var filter5 = '';
+			}
+		 fillterLocations(2,program_products,special_features,category_dealer,filter4,filter5,0);
+	 }
+	
+
+	
+	function clearLocations() {
+     // infoWindow.close();
+     for (var i = 0; i < markers.length; i++) {
+       markers[i].setMap(null);
+     }
+     markers.length = 0;
+	side_bar_html = "";
+   }
+  </script>
+  <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnnBdSV0R6apiFjcQlWT69q6s_FRFL--g&sensor=false&callback=initMap" type="text/javascript"></script>
+<script>
+function my_address()
+{
+	if (navigator.geolocation) {
+	  navigator.geolocation.getCurrentPosition(mia_posizione);
+	}else{
+	  alert('La geo-localizzazione NON è possibile');
+	}
+}
+
+function mia_posizione(position) {
+  var lat = position.coords.latitude;
+  var lon = position.coords.longitude;
+  var latlng = new google.maps.LatLng(lat,lon);
+  var geocoder = new google.maps.Geocoder();
+  geocoder.geocode({'latLng':latlng},function(data,status){
+	if(status == google.maps.GeocoderStatus.OK){
+		var add = data[1].formatted_address;
+		jQuery('#addressInput').val(add);
+		}
+  
+  })  
+}
+  
+</script>
+</head>
+<body style="margin:0px; padding:0px;"  class="storelocator"> 
+  <div class="storewrap">
+			<div id="headerContainer">
+				<div class="head-left">
+					<?php /* <div class="gmnoprint title unselectable" id="topTitle">
+					
+					</div> */ ?>
+					<div class="search-left">
+						<div class="test-search">
+							<?php if (Mage::getSingleton('core/session')->getSearchvalue()!= "") { ?>
+							<input type="text" value="<?php echo Mage::getSingleton('core/session')->getSearchvalue() ?>" id="addressInput"  size="30" />
+							<?php } else { ?>
+							<input type="text" value="italia" onfocus="if (this.value == 'italia') {this.value = '';}" onblur="if (this.value == '') {this.value = 'italia';}" id="addressInput"  size="30" />
+							
+							<?php } ?>
+							<div class="searchButton unselectable" style ="float: left;">
+								<div class="normal"></div>
+								<div class="highlighted btn-search" onclick="search()" style="display: block;">search</div>
+							</div>
+							<div class = "lt">
+								<span id="geolocationButton" class="anc_arrow" style="cursor: pointer" onclick="my_address()">Determina la tua posizione</span>
+							</div>
+							
+							<div class="clear"></div>
+						</div>
+						
+						<div id="result_search" ></div>
+					</div>
+					<div id="posizione"></div>
+				</div>
+					
+				<div class="head-right">
+				
+					<div class="searchform">						
+						<div id="selectbox">
+							
+						</div>						
+					</div>
+					
+					<select id="radiusSelect" style="display:none">
+					  <option value="16" selected>25 miles</option>
+					  <option value="16">100 miles</option>
+					  <option value="16">200 miles</option>
+					</select>
+					
+				</div>	
+				<div class="clear"></div>
+			<div id="finter" class="search-bottom" style="padding-top:20px;" >				
+			</div>
+			<div class="clear"></div>
+			
+			<div class="search-bottom" style=" width:150px;padding:10px;">
+				<div><strong>Search Results</strong></div>
+				<div><select id="sort" style="width:130px" onchange="changesort()">
+						<option  value="" selected="selected">sort by</option>
+						<option  value="distance_asc" >Distance (ascending ↑)</option>
+						<option  value="distance_desc" >Distance (descending ↓)</option>
+						<option  value="name_asc" >Name (ascending ↑)</option>
+						<option  value="name_desc" >Name (descending ↓)</option>
+					</select>
+				</div>
+			</div>
+
+			<div class="clear"></div>
+			</div>			
+			<div style="display:none"><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
+			
+			
+		<table border="0" bordercolor="" style="position: relative;z-index: 1;" width="100%" cellpadding="0" cellspacing="0">
+			<tr>
+				<td class="side_bar"><div id="side_bar"></div></td>
+				<td class="map">		  
+					<div id="map" ></div>					
+				</td>
+			</tr>
+		</table>
+	</div>
+	<style>
+		.storewrap .head-left .search-left .test-search input#addressInput {
+			height: 31px;
+		}
+		.tabstyle { color: #999999;cursor: pointer;float: left;font-size: 12px;font-weight: normal;line-height: 100%;padding: 22px 20px 15px;text-align: left;text-decoration: none;text-transform: uppercase;vertical-align: middle;}
+		.hidencontenttab { display:none !important}
+		#city {height: 50px;padding: 16px 10px;width: 106px;}
+		.tabcontent p { font-size: 14px; margin-bottom: 1px; margin-top: 0 !important; text-transform: none; }
+
+		.detail-store {
+			margin: 0 auto !important;
+			text-align: left;
+			padding-left: 10px;
+			padding-top: 10px;
+		}
+		.detail-store .name {
+			font-weight:600 !important;
+			color:#9c2a25 !important;
+			font-size:15px !important;
+		}
+
+		.indicazioni_stradali {
+			display:none !important;
+		}
+	</style>
+</body>
+</html>

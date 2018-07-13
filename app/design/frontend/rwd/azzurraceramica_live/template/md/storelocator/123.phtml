@@ -1,0 +1,82 @@
+<?php
+$items = $this->getLocation();
+$OptionCountry = $this->getCountry();
+$lat=$_POST['lat'];
+$lng=$_POST['lng'];
+
+if($lat==0 && $lng==0){
+?>	
+	<div>
+		<strong class="stato"><?php echo __('Seleziona stato') ?></strong>
+	</div>
+	<select id="city" onchange="changecity(1)">						
+		<option  value=""><?php echo __('Select') ?></option>
+		<?php
+
+								foreach($OptionCountry as $code => $name)
+								{	
+								?>
+									<option  value="<?php echo $code; ?>"><?php echo $name ?></option>
+								<?php
+								}
+							?>	
+	</select>
+<?php
+}
+else{
+?>
+	<div>
+		<strong class="stato"><?php echo __('Seleziona stato') ?></strong>
+	</div>
+	<select id="city" onchange="changecity(1)">	
+		<option  value=""><?php echo __('Select') ?></option>
+	<?php
+		$array_countrys = array();
+		foreach($items as $item)
+		{
+			if($item['program_products']==$_POST['continente'])
+			{
+				$array_countrys[]=$item['country_code'];
+			}
+		}
+		
+		$array_countrys=array_unique($array_countrys);
+		
+		foreach($array_countrys as $array_country){
+			
+			foreach($OptionCountry as $code => $name)
+			{
+				if($code == $array_country){
+		?>
+			<option  value="<?php echo $array_country; ?>"><?php echo $name; ?></option>
+		<?php
+				}
+			}
+			
+			
+			
+		?>
+			
+		<?php
+		}
+	?>
+	</select>
+<?php
+}
+function getCountryByCode($value_code){
+	foreach($OptionCountry as $code => $name)
+	{
+		if($code == $value_code){
+			
+			return $name;
+		}
+	}
+}
+?>
+<script type="text/javascript">
+	jQuery( document ).ready(function( $ ) {
+		jQuery(function(){
+			jQuery("select#city").jSelect({listwidth:'150px',editable:true});		
+		})
+	})
+</script>

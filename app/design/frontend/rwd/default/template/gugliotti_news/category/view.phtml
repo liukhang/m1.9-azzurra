@@ -1,0 +1,42 @@
+<?php
+/**
+ * Gugliotti News Template File
+ */
+
+/**
+ * Gugliotti News Template File
+ *
+ * @author Andre Gugliotti <andre@gugliotti.com.br>
+ * @version 0.1.0
+ * @package Training Modules
+ * @license GNU General Public License, version 3
+ */
+?>
+<?php
+    try {
+        /** @var $stories Gugliotti_News_Block_Category */
+        $stories = $this->getNewsByCategory($this->getRequest()->getParam('id'));
+    } catch (Exception $e) {
+        Mage::logException($e);
+    }
+
+    $helper = Mage::helper('gugliotti_news');
+?>
+<?php if (!$stories->count()) : ?>
+<p class="note-msg"><?php echo $this->__('There are no stories matching the selection.') ?></p>
+<?php else : ?>
+<div class="stories-list">
+    <ul class="stories-items-list">
+        <?php foreach ($stories as $st) : ?>
+            <li id="story-<?php echo $st->getId(); ?>" class="story-item">
+                <div class="story-thumbnail"><img src="<?php echo $helper->getImageFullPath($st->getThumbnailPath()); ?>" /></div>
+                <div class="story-body">
+                    <h2><?php echo $st->getTitle(); ?></h2>
+                    <p><?php echo $helper->summarize($st->getContent()); ?></p>
+                    <p><a href="<?php echo Mage::getUrl('news/story/view', array('id' => $st->getId())); ?>" title="<?php echo $st->getTitle(); ?>"><?php echo $this->__('Read More'); ?></a></p>
+                </div>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>

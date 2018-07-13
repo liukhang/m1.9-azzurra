@@ -1,0 +1,165 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <MD_Storelocator>
+            <version>2.1.2</version>
+        </MD_Storelocator>
+    </modules>
+    <global>
+        <models>
+            <storelocator>
+                <class>MD_Storelocator_Model</class>
+                <resourceModel>storelocator_mysql4</resourceModel>
+            </storelocator>
+            <storelocator_mysql4>
+                <class>MD_Storelocator_Model_Mysql4</class>
+                <entities>
+                    <location>
+                        <table>storelocator_location</table>
+                    </location>
+                    <country>
+                        <table>storelocator_country</table>
+                    </country>
+                </entities>
+            </storelocator_mysql4>
+        </models>
+        <resources>
+            <storelocator_setup>
+                <setup>
+                    <module>MD_Storelocator</module>
+                </setup>
+                <connection>
+                    <use>core_setup</use>
+                </connection>
+            </storelocator_setup>
+            <storelocator_write>
+                <connection>
+                    <use>core_write</use>
+                </connection>
+            </storelocator_write>
+            <storelocator_read>
+                <connection>
+                    <use>core_read</use>
+                </connection>
+            </storelocator_read>
+        </resources>
+        <helpers>
+            <storelocator><class>MD_Storelocator_Helper</class></storelocator>
+        </helpers>
+        <blocks>
+            <storelocator><class>MD_Storelocator_Block</class></storelocator>
+        </blocks>
+        <storelocator>
+            <private_fields></private_fields>
+        </storelocator>
+    </global>
+    <frontend>
+        <routers>
+            <storelocator>
+                <use>standard</use>
+                <args>
+                    <module>MD_Storelocator</module>
+                    <frontName>punti-vendita</frontName>
+                </args>
+            </storelocator>
+        </routers>
+        <layout>
+            <updates>
+                <storelocator module="MD_Storelocator">
+                    <file>md/storelocator/storelocator.xml</file>
+                </storelocator>
+            </updates>
+        </layout>
+    </frontend>
+    <admin>
+         <routers>
+            <storelocator>
+                <use>admin</use>
+                <args>
+                    <module>MD_Storelocator</module>
+                    <frontName>storelocator</frontName>
+                </args>
+            </storelocator>
+        </routers>
+    </admin>
+    <adminhtml>
+        <menu>
+            <cms>
+                <children>
+                    <storelocator translate="title" module="storelocator">
+                        <title>Store Locations</title>
+                        <children>
+                            <country translate="title" module="storelocator">
+                                <title>Manager Country</title>
+                                <sort_order>0</sort_order>
+                                <action>storelocator/adminhtml_country/</action>
+                            </country>
+                            <stores translate="title" module="storelocator">
+                                <title>Manager Store</title>
+                                <sort_order>1</sort_order>
+                                <action>storelocator/adminhtml_location/</action>
+                            </stores>
+                        </children>
+                    </storelocator>
+                 </children>
+            </cms>
+        </menu>
+        <acl>
+            <resources>
+                <admin>
+                    <children>
+                        <cms>
+                            <children>
+                                <storelocator>
+                                    <title>Store Locations</title>
+                                </storelocator>
+                            </children>
+                        </cms>
+                        <system>
+                            <children>
+                                <config>
+                                    <children>
+                                        <storelocator>
+                                            <title>Store Locations</title>
+                                        </storelocator>
+                                    </children>
+                                </config>
+                            </children>
+                        </system>
+                    </children>
+                </admin>
+            </resources>
+        </acl>
+<!--         <layout>
+            <updates>
+                <album>
+                    <file>md/storelocator/storelocator.xml</file>
+                </album>
+            </updates>
+        </layout> -->
+    </adminhtml>
+    <default>
+        <storelocator>
+            <general>
+                <google_geo_url><![CDATA[http://maps.google.com/maps/geo]]></google_geo_url>
+				<default_radius>100</default_radius>
+                <distance_units>mi</distance_units>
+                <num_results>20</num_results>
+                <show_search>1</show_search>
+                <show_map>1</show_map>
+            </general>
+			<setting>
+				<enabled1>1</enabled1>
+				<enabled2>1</enabled2>
+				<enabled3>1</enabled3>
+				<enabled4>1</enabled4>
+				<enabled5>1</enabled5>
+				<name1>Program Products</name1>
+				<name2>Special Features</name2>
+				<name3>Category Dealer</name3>
+				<name4>Filter 4</name4>
+				<name5>Filter 5</name5>
+            </setting>
+        </storelocator>
+    </default>
+</config>

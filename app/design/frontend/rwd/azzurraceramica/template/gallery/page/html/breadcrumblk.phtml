@@ -1,0 +1,18 @@
+<?php $new_album = Mage::registry('current_album'); ?>
+<div class="breadcrumbs lk">
+    <ul>
+	    <li class="home">
+	            <a href="<?php echo Mage::getBaseUrl(); ?>" title="Go to Home Page"><?php echo __('Home') ?></a>
+	            <span>/</span>
+	    </li>
+	    <li class="Realizzazioni">
+	            <a href="<?php echo Mage::getBaseUrl(); ?>realizzazioni" title=""><?php echo __('Realizzazioni') ?></a>
+	    </li>
+        <?php if($new_album['content']!='this is content of root album'){ ?>
+	    <li class="<?php echo $new_album->getTitle() ?>">
+	    		<span>/</span>
+	            <p><?php echo $new_album->getTitle() ?></p>
+	    </li>
+    	<?php } ?>
+    </ul>
+</div>

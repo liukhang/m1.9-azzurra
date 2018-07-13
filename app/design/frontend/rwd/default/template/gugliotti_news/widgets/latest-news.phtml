@@ -1,0 +1,29 @@
+<?php
+/**
+ * Gugliotti News Template File
+ */
+
+/**
+ * Gugliotti News Template File
+ *
+ * @author Andre Gugliotti <andre@gugliotti.com.br>
+ * @version 0.1.0
+ * @package Training Modules
+ * @license GNU General Public License, version 3
+ */
+?>
+<?php
+    /** @var $stories Gugliotti_News_Model_Story */
+    $stories = $this->getLatestNews();
+    $helper = Mage::helper('gugliotti_news');
+?>
+<?php if ($stories->getSize() > 0) : ?>
+<div id="latest-news">
+    <h2><?php echo $this->__('Latest News'); ?></h2>
+    <ul>
+        <?php foreach ($stories as $st) : ?>
+            <li><a href="<?php echo Mage::getUrl('news/story/view', array('id' => $st->getId())); ?>" title="<?php echo $st->getTitle(); ?>"><?php echo $st->getTitle(); ?></a></li>
+        <?php endforeach; ?>
+    </ul>
+</div>
+<?php endif; ?>

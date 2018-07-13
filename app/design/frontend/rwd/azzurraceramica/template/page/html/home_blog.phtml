@@ -1,0 +1,52 @@
+<?php $posts = Mage::getResourceModel('wordpress/post_collection')
+->addPostTypeFilter('post')
+->setOrderByPostDate()
+->addIsViewableFilter()
+->setPageSize(20)
+->load(); ?>
+<div class="home_blog">
+	<h1><?php echo __('News ed eventi') ?></h1>
+	<?php if (count($posts) > 0): ?>
+		<ul id="post-list" class="slick_home carousel animatedParent">
+			<?php $i=0; foreach($posts as $post): ?>
+				<?php $i++; ?>
+				<li class="delay-<?php echo ($i * 250) ?> item animated fadeIn slow" data-id='<?php echo $i ?>'>
+					<div class="left_blog">
+						<?php if ($featuredImage = $post->getFeaturedImage()): ?>
+						<a href="<?php echo $post->getPermalink() ?>">
+							<img src="<?php echo $featuredImage->getFullSizeImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>">
+						</a>
+						<?php endif; ?>
+					</div>
+					<div class="right_blog">
+						<span class="post-date when time">
+							<i class="fa fa-calendar" aria-hidden="true"></i>
+							<span class="day"><?php echo __('Data:') ?> <?php echo $post->getPostDate('d'); ?>/<?php echo $post->getPostDate('m'); ?>/<?php echo $post->getPostDate('y'); ?></span>
+						</span>
+						<h3><a href="<?php echo $post->getPermalink() ?>"><?php echo $this->escapeHtml($post->getPostTitle()) ?></a></h3>
+							<?php echo substr($post->getPostContent(), 0, 118) .((strlen($post->getPostContent()) > 118) ? '...' : ''); ?>
+
+						<a href="<?php echo $post->getPermalink() ?>" class="scopri"><?php echo __('Scopri') ?></a>
+					</div>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	<?php endif; ?>
+</div>
+<script>
+	jQuery('.slick_home').slick({
+		dots: false,
+		nav: true,
+		nextArrow: '<i class="fa fa-chevron-circle-right" aria-hidden="true"></i>',
+		prevArrow: '<i class="fa fa-chevron-circle-left" aria-hidden="true"></i>',
+		slidesPerRow: 2,
+		rows: 2
+	});
+</script>
+<!-- <script>
+	var scroll = new SmoothScroll('a[href*="#"]');
+</script> -->
+
+
+
+

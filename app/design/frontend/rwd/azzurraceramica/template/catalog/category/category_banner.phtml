@@ -1,0 +1,10 @@
+<?php 
+$category_id  = 0;
+$category_id  = Mage::registry('current_category')->getId();
+?>
+<?php if ($category_id == 5) : ?>
+	<div class="category_banner">
+		<?php echo $this->getLayout()->createBlock('cms/block')->setBlockId('banne_top_area_lavabo')->toHtml(); ?>
+	</div>
+<?php endif; ?>
+

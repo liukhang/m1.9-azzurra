@@ -1,0 +1,93 @@
+<?php
+$items = $this->getLocation();
+$OptionCountry = $this->getCountry();
+$lat=$_POST['lat'];
+$lng=$_POST['lng'];
+$distan=array();
+foreach($OptionCountry as $code => $name)
+{
+	$coords = getCoordinates($name);
+		$x1=$lat;
+		$y1=$lng;
+		$x2=$coords[0];
+		$y2=$coords[1];
+		$earthRadius = 6371;
+		$latFrom = deg2rad($x1);
+		$lonFrom = deg2rad($y1);
+		$latTo = deg2rad($x2);
+		$lonTo = deg2rad($y2);
+
+		$latDelta = $latTo - $latFrom;
+		$lonDelta = $lonTo - $lonFrom;
+		$angle = 2 * asin(sqrt(pow(sin($latDelta / 2), 2) + cos($latFrom) * cos($latTo) * pow(sin($lonDelta / 2), 2)));
+	$dist=$angle * $earthRadius;	
+	$distan[]=$angle * $earthRadius;	
+	$array[]=array ('distan' => $dist, 'code' => $code, 'name' => $name);
+}
+ $distance=min($distan);
+
+if($lat==0 && $lng==0){
+?>	
+	<div>
+		<strong class="stato"><?php echo __('Seleziona stato') ?></strong>
+	</div>
+	<select id="city" onchange="changecity(1)">						
+		<option  value=""><?php echo __('Italia') ?></option>
+		<?php
+
+								foreach($OptionCountry as $code => $name)
+								{	
+								?>
+									<option  value="<?php echo $code; ?>"><?php echo $name ?></option>
+								<?php
+								}
+							?>	
+	</select>
+<?php
+}
+else{
+?>
+	<?php foreach($array as $arr)
+		{
+			if($arr['distan']==$distance)
+			{
+	?>		
+				<select id="city" onchange="changecity(1)">
+					<option  value="<?php echo $arr['code']; ?>" ><?php echo $arr["name"]; ?></option>
+							<?php
+								foreach($OptionCountry as $code => $name)
+								{
+									if($code !=$arr['code'])
+									{
+								?>
+										<option  value="<?php echo $code; ?>"><?php echo $name; ?></option>
+								<?php 
+									}
+								
+								}
+							?>
+				</select>
+	<?php			
+			}
+		}
+	?>
+<?php
+}
+function getCoordinates($address){
+    $address = urlencode($address);
+    $url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=" . $address;
+    $response = file_get_contents($url);
+    $json = json_decode($response,true);
+    $lat = $json['results'][0]['geometry']['location']['lat'];
+    $lng = $json['results'][0]['geometry']['location']['lng']; 
+    return array($lat, $lng);
+}
+?>
+<script type="text/javascript">
+	jQuery( document ).ready(function( $ ) {
+		jQuery(function(){
+			jQuery("select#city").jSelect({listwidth:'150px',editable:true});	
+		})
+	});
+
+</script>

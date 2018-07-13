@@ -1,0 +1,343 @@
+<?php
+$continentes = Mage::getModel('storelocator/continent')->getCollection();		
+$country = Mage::getModel('storelocator/country')->getCollection();		
+$OptionCountry = $this->getCountry();
+?>
+
+	<script type="text/javascript" src="<?php echo $this->getSkinUrl('md/storelocator/jSelect.js'); ?>"></script>
+	<script type="text/javascript">
+		jQuery.noConflict();
+		jQuery( document ).ready(function( $ ) {
+			jQuery(function(){
+				jQuery(".country").jSelect({listwidth:'150px',editable:true});
+				jQuery("select.continente").jSelect({listwidth:'150px',editable:true});
+			})
+		})
+	</script>	
+	<script type="text/javascript">
+    //<![CDATA[
+    var map;
+    var markers = [];
+    var side_bar_html = "";
+    var infoWindow;
+    var locationSelect;
+
+    function initMap() {
+    	map = new google.maps.Map(document.getElementById("map"), {
+    		center: new google.maps.LatLng(41.87194, 12.567379999999957),
+    		zoom: 4,
+    		mapTypeId: 'roadmap',
+    		mapTypeControlOptions: {style: google.maps.MapTypeControlStyle.DROPDOWN_MENU}
+    	});
+    	infoWindow = new google.maps.InfoWindow();
+    	locationSelect = document.getElementById("locationSelect");
+    	locationSelect.onchange = function() {
+    		var markerNum = locationSelect.options[locationSelect.selectedIndex].value;
+    		if (markerNum != "none"){
+    			google.maps.event.trigger(markers[markerNum], 'click');
+    		}
+    	};
+    	fillterLocations(0);
+    }
+
+    function fillterLocations(TypeFilter) {
+		if(TypeFilter==0){
+			fillterLocationsNear(0,0);
+		}else if(TypeFilter==1){
+			var address = document.getElementById("addressInput").value;
+			var geocoder = new google.maps.Geocoder();
+			geocoder.geocode({address: address}, function(results, status) {    		
+			if (status == google.maps.GeocoderStatus.OK) {
+				fillterLocationsNear(results[0].geometry.location,1);
+			}    
+			}); 
+		}else if(TypeFilter==2){
+				fillterLocationsNear(0,2);			    
+		}
+    }    
+    function fillterLocationsNear(center,TypeFilter) {
+    	clearLocations(); 	 		
+		if(TypeFilter==0){
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map/index?type=0';
+		}else if(TypeFilter==1){			
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map/index?type=1&lat=' + center.lat() + '&lng=' +center.lng();
+		}else if(TypeFilter==2){
+			var searchUrl = '<?php echo Mage::getBaseUrl();?>storelocator/map/index?type=2&country='+document.getElementById("country").value;
+		}
+    	
+    	downloadUrl(searchUrl, function(data) {
+			var xml = parseXml(data);
+			var markerNodes = xml.documentElement.getElementsByTagName("marker");
+			var bounds = new google.maps.LatLngBounds();
+			for (var i = 0; i < markerNodes.length; i++) {
+				var name = markerNodes[i].getAttribute("name");
+				var email = markerNodes[i].getAttribute("email");
+				var phone = markerNodes[i].getAttribute("phone");
+				var address = markerNodes[i].getAttribute("address");	 
+				var distance = parseFloat(markerNodes[i].getAttribute("distance"));
+				var moreinfo = markerNodes[i].getAttribute("moreinfo");
+				var latlng = new google.maps.LatLng(
+				parseFloat(markerNodes[i].getAttribute("lat")),
+				parseFloat(markerNodes[i].getAttribute("lng")));
+				var mydistance = markerNodes[i].getAttribute("mydistance");
+				createOption(name, distance, i);
+				createMarker(latlng, name, address, moreinfo,email,phone,mydistance);
+				bounds.extend(latlng);
+			}
+			map.fitBounds(bounds);
+			
+			jQuery('map').addClass('active');
+			
+			
+			if (side_bar_html == "") {
+			document.getElementById("side_bar").innerHTML = '<strong style="width:100%;text-align:center;padding:10px;display:inline-block;">No Matches Found</strong>';}
+			else {
+			document.getElementById("side_bar").innerHTML = '<ul>' + side_bar_html + '</ul>';
+			jQuery('#side_bar .store_item').click(function() {
+				jQuery('#side_bar .store_item').removeClass('active');
+				jQuery(this).addClass('active');
+			});
+			}
+		});
+	}
+    function createMarker(latlng, name, address, moreinfo,email,phone,mydistance,icon) {
+
+      // var html = "<b>" + name + "</b> <br/>" + address + "<br/>" + moreinfo;
+      var html = '<div style="background: none repeat scroll 0 0 #FFFFFF;border: 0 solid #FFFFFF;width: 100%;margin-left:1px ">';
+      html = html + '<div style="display:none;background: none repeat scroll 0 0 #E3511A;height: 2px;overflow: visible;width: auto;"><div style="display:none;background: url(\'../images/store-details-top-bar.png\') no-repeat scroll 0 0 rgba(0, 0, 0, 0);height: 18px;position: absolute;top: 1px;width: 100%;"></div></div>';
+      html = html + '<div style="display:none;-moz-border-bottom-colors: none;-moz-border-left-colors: none;-moz-border-right-colors: none;-moz-border-top-colors: none;background: none repeat scroll 0 0 #F2F2F2;border-color: #E5E5E5;border-image: none;border-left: 1px solid #FFFFFF;border-style: none none solid solid;border-width: 0 0 1px 1px;height: 36px;position: relative;border-left:none;border-right:none">';
+      html = html + '<div id="tab1" onclick="changetab(\'tab1content\',\'tab1\')" class="tabstyle" style=" background: #fff;">';
+      html = html + '<div style="color: #000000;font-weight: normal;line-height: 100%;margin-top: -12px;text-align: left;text-decoration: none;">Information Store</div>';
+      html = html + '</div><div id="tab2" onclick="changetab(\'tab2content\',\'tab2\')" class="tabstyle">';
+      html = html + '<div  style=" color: #000000;font-size: 12px;font-weight: normal;letter-spacing: 1px;line-height: 100%;margin-top: -12px;text-align: left;text-decoration: none;">Opening Hours</div>';
+      html = html + '</div></div><div class="content_info">';
+      html = html + '<div><h2 style="color: #000000;font-size: 14px;font-weight: bold;line-height: 21px;margin: 22px 0 0 0;text-align: c;text-decoration: none;padding: 0 0 0 15px">' + name + '</h2></div>';
+      html = html + '<div id="tab1content" class="tabcontent" style="padding: 15px 15px 0;color: #000000;float: left;font-family: CustomAdiHausPSRegular,arial,helvetica,sans-serif;font-size: 12px;font-weight: normal;line-height: 17px;margin: 0;text-align: left;text-decoration: none;"><div>' + address + '</div><div>'+'Phone: ' + phone + '</div><div>'+'Email/Website: ' + email + '</div><div style="float:left;width: 49%;"></div></div>';
+
+      html = html + '<div id="tab2content" class="tabcontent" style="display:none;padding: 15px;color: #000000;float: left;font-family: CustomAdiHausPSRegular,arial,helvetica,sans-serif;font-size: 14px;font-weight: normal;line-height: 17px;margin: 0;text-align: left;text-decoration: none;">';
+      html = html + moreinfo + '</div></div></div>';
+      var cleanaddy = address.replace(/<\/?[^>]+(>|$)/g, "");
+           var shadow = new google.maps.MarkerImage('<?php echo $this->getSkinUrl('md/storelocator/bg_br.png'); ?>', new google.maps.Size(0, 0) );
+
+
+           var marker = new google.maps.Marker({
+           	map: map,
+           	shadow: shadow,
+           	position: latlng
+           });
+           google.maps.event.addListener(marker, 'click', function() {
+           	infoWindow.setContent(html);
+           	infoWindow.open(map, marker);
+           });
+           markers.push(marker);
+
+          var image='<?php echo $this->getSkinUrl("md/storelocator/icon/0.png"); ?>';
+           marker.setIcon(image);
+           side_bar_html += '<li class="store_item"><div class="whiteLine"></div><div class="marker" ><div class="list-marker performance" style="background: url('+image+') no-repeat"></div><p><a href="javascript:myclick(' + (markers.length-1) + ')">'+ mydistance +' Km'+'</a></p></div><div class="text"><a href="javascript:myclick(' + (markers.length-1) + ')"><h2>' + name + '</h2></a><p><a href="javascript:myclick(' + (markers.length-1) + ')">'+ address +'</a></p><p><a href="tel:'+ phone +'">'+'Tel. '+ phone +'</a></p><p><strong>Email: </strong><a href="mailto:' + email + '"><ins>' + email + '</ins></a></p><div class="tagList"></div><div class="dottedLine"></div></div></li>';
+                   }
+                   
+       function myclick(i) {
+			google.maps.event.trigger(markers[i], "click");
+       }
+
+       function createOption(name, distance, num) {
+       	var option = document.createElement("option");
+       	option.value = num;
+       	option.innerHTML = name + "(" + distance.toFixed(1) + ")";
+       	locationSelect.appendChild(option);
+       }
+
+       function downloadUrl(url, callback) {
+       	var request = window.ActiveXObject ?
+       	new ActiveXObject('Microsoft.XMLHTTP') :
+       	new XMLHttpRequest;
+
+       	request.onreadystatechange = function() {
+       		if (request.readyState == 4) {
+       			request.onreadystatechange = doNothing;
+       			callback(request.responseText, request.status);
+       		}
+       	};
+
+       	request.open('GET', url, true);
+       	request.send(null);
+       }
+
+       function parseXml(str) {
+       	if (window.ActiveXObject) {
+       		var doc = new ActiveXObject('Microsoft.XMLDOM');
+       		doc.loadXML(str);
+       		return doc;
+       	} else if (window.DOMParser) {
+       		return (new DOMParser).parseFromString(str, 'text/xml');
+       	}
+       }
+
+       function doNothing() {}
+
+    
+    
+    jQuery( document ).ready(function( $ ) {
+    	jQuery('#addressInput').keyup(function(e) {
+    		if(e.keyCode == 13) {
+				if(jQuery('#addressInput').val()==""){
+					fillterLocations(0);
+				}else{
+					fillterLocations(1);
+				}
+    			
+    		}
+    	});
+		jQuery('#country').change(function() {
+		  fillterLocations(2);
+		});
+		
+		jQuery('.continente').change(function() {
+			jQuery.ajax({
+				type: "POST",
+				dataType : 'json',
+				url:"<?php echo $this->getUrl('storelocator/map/country');?>",
+				data: 'continente='+jQuery('.continente').val(),
+				success:function(data){
+					jQuery('#selectbox .content').html(data.content);
+					jQuery(".country").jSelect({listwidth:'150px',editable:true});
+					jQuery('#country').change(function() {
+					  fillterLocations(2);
+					});
+				}
+			});
+		});
+    })
+	
+	function clearLocations() {    
+		for (var i = 0; i < markers.length; i++) {
+			markers[i].setMap(null);
+		}
+		markers.length = 0;
+		side_bar_html = "";
+	}
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDnnBdSV0R6apiFjcQlWT69q6s_FRFL--g&sensor=false&callback=initMap" type="text/javascript"></script>
+<script>
+	function my_address()
+	{
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(mia_posizione);
+		}else{
+			alert('La geo-localizzazione NON è possibile');
+		}
+	}
+
+	function mia_posizione(position) {
+		var lat = position.coords.latitude;
+		var lon = position.coords.longitude;
+		var latlng = new google.maps.LatLng(lat,lon);
+		var geocoder = new google.maps.Geocoder();
+		geocoder.geocode({'latLng':latlng},function(data,status){
+			if(status == google.maps.GeocoderStatus.OK){
+				var add = data[1].formatted_address;
+				jQuery('#addressInput').val(add);
+			}
+
+		})  
+	}
+
+</script>
+
+<div style="margin:0px; padding:0px;"  class="storelocator"> 
+    <div class="store_title">
+        <h1><?php echo __('Punti Vendita') ?></h1>
+    </div>
+	<div class="storewrap">
+		<div id="headerContainer">
+            <div class="store_content"> 
+                <div class="head-left">
+                        <?php /* <div class="gmnoprint title unselectable" id="topTitle">
+                        
+                    </div> */ ?>
+                    <div class="search-left">                      
+						<div class="lt">
+							<strong id="geolocationButton" class="anc_arrow_custom" style="cursor:pointer" onclick="my_address()" ><?php echo __('Inserisci la tua città o CAP') ?></strong>
+						</div>
+						<input type="text" value="" id="addressInput"  />  
+						<div class="clear"></div>                      
+                    </div>
+                </div>
+                <span class="store_op">
+                    <?php echo __('oppure') ?>
+                </span>
+                <div class="az-filter">
+                    <div class="head-mid">
+						<div id="finter" class="az-search-bottom">  
+							<div class="clr" style="float:left;">				
+								<div class="title"><strong><?php echo $this->__("Seleziona continente"); ?></strong></div>
+								<div class="content"><select class="continente">
+										<option  value="" selected="selected"><?php echo $this->__('Select'); ?></option>
+									<?php foreach($continentes as $continente){ ?>
+										<option  value="<?php echo $continente->getContinent();?>"><?php echo $continente->getContinent()?></option>
+									<?php } ?>		
+									</select>
+								</div>
+							</div>
+						</div>
+                    </div>
+                    <div class="head-right">
+
+                        <div class="searchform">                        
+                            <div id="selectbox">
+								<div class="title"><strong><?php echo $this->__("Seleziona continente"); ?></strong></div>
+								<div class="content">
+									<select id="country"  class="country">						
+										<option  value="" selected="selected"><?php echo $this->__('Select'); ?></option>
+										<?php foreach($country as $country_code){ ?>
+											<?php $country = Mage::getModel('directory/country')->loadByCode($country_code->getCountryCode()); ?>
+											<option  value="<?php echo $country_code->getCountryCode();?>"><?php echo $country->getName();?></option>
+										<?php } ?>	
+																	
+									</select>	
+								</div>                      
+                            </div>                      
+                        </div>    
+                    </div>
+                </div>
+            </div>           	
+		</div>			
+		<div style="display:none"><select id="locationSelect" style="width:100%;visibility:hidden"></select></div>
+		<div class="az_store">
+                <div class="map">         
+                    <div id="map" ></div>                   
+                </div>
+                <div class="risu" style="display: none;">
+                    <h2><?php echo __('Risultati ricerca') ?></h2>
+                </div>
+				<div class="side_bar">
+                    <div id="side_bar"></div>
+                </div>
+		</div>
+	</div>
+	<style>
+	.storewrap .head-left .search-left .test-search input#addressInput {
+		height: 31px;
+	}
+	.tabstyle { color: #999999;cursor: pointer;float: left;font-size: 12px;font-weight: normal;line-height: 100%;padding: 22px 20px 15px;text-align: left;text-decoration: none;text-transform: uppercase;vertical-align: middle;}
+	.hidencontenttab { display:none !important}
+	#country {height: 50px;padding: 16px 10px;width: 106px;}
+	.tabcontent p { font-size: 14px; margin-bottom: 1px; margin-top: 0 !important; text-transform: none; }
+
+	.detail-store {
+		margin: 0 auto !important;
+		text-align: left;
+		padding-left: 10px;
+		padding-top: 10px;
+	}
+	.detail-store .name {
+		font-weight:600 !important;
+		color:#9c2a25 !important;
+		font-size:15px !important;
+	}
+
+	.indicazioni_stradali {
+		display:none !important;
+	}
+</style>
+</div>

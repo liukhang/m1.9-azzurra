@@ -1,0 +1,47 @@
+<?php 
+	Mage::getSingleton('core/session')->setMyUrlProduct(Mage::helper('core/url')->getCurrentUrl());
+ ?>
+<?php $_product = $this->getProduct(); ?>
+<ul class="data-table" id="tab_disegni">
+    <?php if ($_product->getData("ac_disegno_2d")) { ?>
+    <li>
+        <span class="label"><i class="fa fa-arrow-right" aria-hidden="true"></i>Disegno 2d:</span>
+        <span class="data"><a class="open_disegni" href="javascript:void(0)"><?php echo $_product->getData("ac_disegno_2d"); ?></a></span>
+    </li>
+    <?php } ?>
+    <?php if ($_product->getData("ac_disegno_3d")) { ?>
+    <li>
+        <span class="label"><i class="fa fa-arrow-right" aria-hidden="true"></i>Disegno 3d:</span>
+        <span class="data"><a class="open_disegni" href="javascript:void(0)"><?php echo $_product->getData("ac_disegno_3d"); ?></a></span>
+    </li>
+    <?php } ?>
+    <?php if ($_product->getData("ac_scheda_tecnica")) { ?>
+    <li>
+        <span class="label"><i class="fa fa-arrow-right" aria-hidden="true"></i>Scheda Tecnica:</span>
+        <span class="data"><a class="open_disegni" href="javascript:void(0)"><?php echo $_product->getData("ac_scheda_tecnica"); ?></a></span>
+    </li>
+    <?php } ?>
+</ul>
+
+<div class="popup_disegni">
+    <form action="<?php echo $this->getUrl('contacts/index/disegni').'id/'.$_product->getId(); ?>" id="form_disegni" method="post" class="form_disegni">
+        <h3>Scarica il DISEGNO IN 2D</h3>
+        <p>Compila il form per scaricare il file</p>
+        <input placeholder="<?php echo __('nome e cognome*') ?>" name="name" id="name" title="" value="" class="input-text required-entry" type="text" required/>
+        <input placeholder="<?php echo __('partita iva') ?>" name="partita" id="partita" title="" value="" class="input-text required-entry" type="text"/>
+        <input placeholder="<?php echo __('codice fiscale* ') ?>" name="codice" id="codice" title="" value="" class="input-text required-entry" type="text" required/>
+        <input placeholder="<?php echo __('e-mail*') ?>" name="email" id="email" title="" value="" class="input-text required-entry validate-email" type="email" autocapitalize="off" autocorrect="off" spellcheck="false" required/>
+        <button><span><?php echo __('SCARICA') ?></span></button>
+    </form>
+</div>
+<script>
+    jQuery('.open_disegni').click(function() {
+        jQuery('.popup_disegni').addClass('active');
+    });
+    jQuery("html").click(function(e) {
+       var target = e.target;
+       if (!jQuery(target).is('.popup_disegni') && !jQuery(target).parents().is('.popup_disegni') && !jQuery(target).is('.open_disegni')) {
+        jQuery( '.popup_disegni' ).removeClass( 'active' );
+       }
+    });
+</script>

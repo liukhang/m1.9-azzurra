@@ -1,0 +1,23 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $posts = $this->getPosts() ?>
+<?php if (count($posts) > 0): ?>
+	<div class="post-list animatedParent">
+		<ul id="post-list" class="">
+			<?php $i=0; foreach($posts as $post): ?>
+				<?php $i++; ?>
+				<li class="delay-<?php echo ($i * 250) ?> item animated fadeIn slow item<?php if ($post->isSticky()): ?> featured is-sticky<?php endif; ?> <?php echo $post->getPostFormat() ?>">
+					<?php echo $this->getPostRenderer($post)->toHtml() ?>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+		<script type="text/javascript">decorateList($('post-list'));</script>
+		<?php echo $this->getPagerHtml() ?>
+	</div>
+<?php endif; ?>

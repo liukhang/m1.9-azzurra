@@ -1,0 +1,16 @@
+<?php if(Mage::registry('current_category')){ ?>
+	<?php 
+	$_helper    = $this->helper('catalog/output');
+	$_category  = Mage::registry('current_category');
+	?>
+
+	<?php if ($_imgUrl = $_category->getImageUrl()) { ?>
+	<?php 	$_imgHtml = '<img src="'.$_imgUrl.'" alt="'.$this->escapeHtml($_category->getName()).'" title="'.$this->escapeHtml($_category->getName()).'" />';
+	$_imgHtml = $_helper->categoryAttribute($_category, $_imgHtml, 'image'); ?>
+	<?php } ?>
+	<?php	if(Mage::registry('current_category')->getLevel()==2 && $_imgUrl){ ?>
+		<div class="category_banner">
+			<?php echo $_imgHtml ?>
+		</div>
+	<?php } ?>
+<?php } ?>

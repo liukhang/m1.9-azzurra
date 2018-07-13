@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<layout>
+    <gugliotti_news_adminhtml_category_index>
+        <reference name="content">
+            <block type="gugliotti_news/adminhtml_category" name="gugliotti_news.adminhtml.category.grid"/>
+        </reference>
+    </gugliotti_news_adminhtml_category_index>
+    <gugliotti_news_adminhtml_category_edit>
+        <reference name="left">
+            <block type="gugliotti_news/adminhtml_category_edit_tabs"
+                   name="gugliotti_news.adminhtml.category.edit.tabs" />
+        </reference>
+        <reference name="content">
+            <block type="gugliotti_news/adminhtml_category_edit"
+                   name="gugliotti_news.adminhtml.category.edit" />
+        </reference>
+    </gugliotti_news_adminhtml_category_edit>
+    <gugliotti_news_adminhtml_story_index>
+        <reference name="content">
+            <block type="gugliotti_news/adminhtml_story" name="gugliotti_news.adminhtml.story.grid"/>
+        </reference>
+    </gugliotti_news_adminhtml_story_index>
+    <gugliotti_news_adminhtml_story_edit>
+        <reference name="left">
+            <block type="gugliotti_news/adminhtml_story_edit_tabs"
+                   name="gugliotti_news.adminhtml.story.edit.tabs" />
+        </reference>
+        <reference name="content">
+            <block type="gugliotti_news/adminhtml_story_edit" name="gugliotti_news.adminhtml.story.edit" />
+        </reference>
+    </gugliotti_news_adminhtml_story_edit>
+</layout>

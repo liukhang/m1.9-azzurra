@@ -1,0 +1,32 @@
+<?php
+/**
+ * Gugliotti News Template File
+ */
+
+/**
+ * Gugliotti News Template File
+ *
+ * @author Andre Gugliotti <andre@gugliotti.com.br>
+ * @version 0.1.0
+ * @package Training Modules
+ * @license GNU General Public License, version 3
+ */
+?>
+<?php
+	$categories = Mage::getModel('gugliotti_news/category')->getPublishedCategories();
+	$helper = Mage::helper('gugliotti_news');
+?>
+<?php if (!$categories->count()) : ?>
+	<p class="note-msg"><?php echo $this->__('There are no categories matching the selection.') ?></p>
+<?php else : ?>
+	<div class="categories-list">
+		<ul class="categories-items-list">
+			<?php foreach ($categories as $ca) : ?>
+				<li id="category-<?php echo $ca->getId(); ?>" class="category-item">
+					<span class="category-link"><a href="<?php echo Mage::getUrl('news/category/view', array('id' => $ca->getId())); ?>" title="<?php echo $ca->getLabel(); ?>"><?php echo $ca->getLabel(); ?></a></span>
+					<span class="category-count"> (<?php echo $this->countNewsForCategory($ca->getId()); ?>)</span>
+				</li>
+			<?php endforeach; ?>
+		</ul>
+	</div>
+<?php endif; ?>

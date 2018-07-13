@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<config>
+    <menu>
+        <cms>
+            <children>
+                <gugliotti_news>
+                    <title>News</title>
+                    <sort_order>100</sort_order>
+                    <children>
+                        <category>
+                            <title>Categories</title>
+                            <sort_order>10</sort_order>
+                            <action>gugliotti_news/adminhtml_category</action>
+                        </category>
+                        <story>
+                            <title>Stories</title>
+                            <sort_order>20</sort_order>
+                            <action>gugliotti_news/adminhtml_story</action>
+                        </story>
+                    </children>
+                </gugliotti_news>
+            </children>
+        </cms>
+    </menu>
+    <acl>
+        <resources>
+            <all>
+                <title>Allow Everything</title>
+            </all>
+            <admin>
+                <children>
+                    <cms>
+                        <children>
+                            <gugliotti_news>
+                                <title>News</title>
+                                <sort_order>10</sort_order>
+                                <children>
+                                    <category>
+                                        <title>Categories</title>
+                                        <sort_order>10</sort_order>
+                                    </category>
+                                    <story>
+                                        <title>Stories</title>
+                                        <sort_order>20</sort_order>
+                                    </story>
+                                </children>
+                            </gugliotti_news>
+                        </children>
+                    </cms>
+                    <system>
+                        <children>
+                            <config>
+                                <children>
+                                    <gugliotti_news translate="title">
+                                        <title>Gugliotti News</title>
+                                        <sort_order>200</sort_order>
+                                    </gugliotti_news>
+                                </children>
+                            </config>
+                        </children>
+                    </system>
+                </children>
+            </admin>
+        </resources>
+    </acl>
+</config>

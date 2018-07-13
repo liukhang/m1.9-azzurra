@@ -1,0 +1,41 @@
+<?php
+/**
+ * @category    Fishpig
+ * @package     Fishpig_Wordpress
+ * @license     http://fishpig.co.uk/license.txt
+ * @author      Ben Tideswell <help@fishpig.co.uk>
+ */
+?>
+<?php $post = $this->getPost() ?>
+<?php if ($post): ?>
+	<?php $helper = $this->helper('wordpress') ?>
+	<?php $author = $post->getAuthor() ?>
+
+	<div class="post-view">
+		
+		<?php echo $this->getBeforePostContentHtml() ?>
+		<div class="post-entry entry std<?php if ($post->getFeaturedImage()): ?> post-entry-with-image<?php endif; ?>">
+			<?php if ($post->isViewableForVisitor()): ?>
+				<?php if ($featuredImage = $post->getFeaturedImage()): ?>
+					<div class="featured-image left">
+						<img src="<?php echo $featuredImage->getFullSizeImage() ?>" alt="<?php echo $this->escapeHtml($post->getPostTitle()) ?>"/>
+					</div>
+				<?php endif; ?>
+				
+				<div class="page-title post-title">
+					<h1><?php echo $this->escapeHtml($post->getPostTitle()) ?></h1>
+					<span class="post-date when time">
+						<i class="fa fa-calendar" aria-hidden="true"></i>
+						<span class="day"><?php echo __('Data:') ?> <?php echo $post->getPostDate('d'); ?>/<?php echo $post->getPostDate('m'); ?>/<?php echo $post->getPostDate('y'); ?></span> 
+					</span>
+				</div>
+				<?php echo $post->getPostContent() ?>
+			<?php else: ?>
+				<?php echo $this->getPasswordProtectHtml() ?>
+			<?php endif; ?>
+		</div>
+		<?php /*		<?php echo $this->getAfterPostContentHtml() ?>
+		<?php echo $this->getCommentsHtml() ?>*/ ?>
+		<a href="<?php echo Mage::getBaseUrl() ?>news" class="all_news"><?php echo __('Torna alle news') ?></a>
+	</div>
+<?php endif; ?>

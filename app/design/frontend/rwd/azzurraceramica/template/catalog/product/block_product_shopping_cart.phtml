@@ -1,0 +1,119 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     rwd_default
+ * @copyright   Copyright (c) 2006-2017 X.commerce, Inc. and affiliates (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php
+/**
+ * Product list template
+ *
+ * @see Mage_Catalog_Block_Product_List
+ */
+/* @var $this Mage_Catalog_Block_Product_List */
+?>
+<?php
+    $_productCollection=$this->getLoadedProductCollection();
+    $_helper = $this->helper('catalog/output');
+?>
+<?php if(!$_productCollection->count()): ?>
+<p class="note-msg"><?php echo $this->__('There are no products matching the selection.') ?></p>
+<?php else: ?>
+<div class="category-products checkout_cart animatedParent">
+    <div class="title-line"> 
+        <h2><?php echo $this->__('Potrebbero interessarti anche') ?></h2>
+    </div>
+    <?php // Grid Mode ?>
+    <?php $_collectionSize = $_productCollection->count() ?>
+    <?php $_columnCount = $this->getColumnCount(); ?>
+    <ul id="checkout_cart_product" class="owl-carousel products-grid products-grid--max-<?php echo $_columnCount; ?>-col">
+        <?php $i=0; foreach ($_productCollection as $_product): ?>
+            <?php $i++; ?>
+            <?php /*if ($i++%$_columnCount==0): ?>
+            <?php endif*/ ?>
+            <li class="delay-<?php echo ($i * 100) ?> animated fadeIn slow item<?php if(($i-1)%$_columnCount==0): ?> first<?php elseif($i%$_columnCount==0): ?> last<?php endif; ?>">
+                <a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" class="product-image">
+                    <?php $_imgSize = 210; ?>
+                    <div class="img-hover">
+                        <img id="product-collection-image-<?php echo $_product->getId(); ?>"
+                         src="<?php echo $this->helper('catalog/image')->init($_product, 'small_image')->resize(335,225); ?>"
+                         alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true) ?>" />
+                         <span class="vedi-pr"><i class="fa fa-search" aria-hidden="true"></i></span>  
+                    </div>
+                </a>
+                <div class="product-info">
+                    <h2 class="product-name"><a href="<?php echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($_product->getName(), null, true) ?>"><?php echo $_helper->productAttribute($_product, $_product->getName(), 'name') ?></a></h2>
+                </div>
+            </li>
+            <?php /*if ($i%$_columnCount==0 || $i==$_collectionSize): ?>
+            <?php endif*/ ?>
+        <?php endforeach ?>
+    </ul>
+    <script type="text/javascript">decorateGeneric($$('ul.products-grid'), ['odd','even','first','last'])</script>
+    <?php endif; ?>
+</div>
+
+<script type="text/javascript">
+    jQuery('#checkout_cart_product').owlCarousel({
+        loop: false,
+        navSpeed: 1000,
+        smartSpeed:1000,
+        margin: 40,
+        autoplay:false,
+        nav:true,
+        navText:['<a href="javascript:void(0)"><i class="fas fa-angle-left"></i></a>','<a href="javascript:void(0)"><i class="fas fa-angle-right"></i></a>'],
+        responsiveClass: false,
+        responsive: {
+            0: {
+                items: 1,
+                // autoplay:true,
+                nav: true
+            },
+            361: {
+                items: 2,
+                // autoplay:true,
+                nav: true
+            },
+            641: {
+                items: 3,
+                // autoplay:true,
+                nav: true
+            },
+            768: {
+                items: 3,
+                // nav: true,
+                loop: false,
+                // autoplay:true,
+                margin: 20
+            },
+            1024: {
+                items: 4,
+                nav: false,
+                loop: false,
+                // autoplay:true,
+                dots: false,
+                margin: 20
+            }               
+        }
+    });
+</script>

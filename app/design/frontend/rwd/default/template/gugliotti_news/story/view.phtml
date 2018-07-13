@@ -1,0 +1,31 @@
+<?php
+/**
+ * Gugliotti News Template File
+ */
+
+/**
+ * Gugliotti News Template File
+ *
+ * @author Andre Gugliotti <andre@gugliotti.com.br>
+ * @version 0.1.0
+ * @package Training Modules
+ * @license GNU General Public License, version 3
+ */
+?>
+<?php
+    try {
+        /** @var Gugliotti_News_Model_Story $story */
+        $story = Mage::getModel('gugliotti_news/story')->load($this->getRequest()->getParam('id'));
+    } catch (Exception $e) {
+        Mage::logException($e);
+    }
+
+	$helper = Mage::helper('gugliotti_news');
+?>
+<div class="story-wrapper">
+    <h1><?php echo $story->getTitle(); ?></h1>
+    <hr>
+    <div class="story-content">
+        <?php echo $story->getContent(); ?>
+    </div>
+</div>

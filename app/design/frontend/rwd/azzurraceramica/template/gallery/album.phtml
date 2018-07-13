@@ -1,0 +1,183 @@
+<script type="text/javascript">
+jQuery(function(){
+	jQuery("a[rel='photo']").colorbox({
+		slideshow:true,
+		slideshowSpeed:<?php echo $this->getSlideShowSpeed();?>
+	});
+	jQuery(".slide-show").click(function(){
+		jQuery("a[rel='photo']:first").click();
+	});
+});
+</script>
+<?php $currentAlbum = Mage::registry('current_album');?>
+<?php $mode = $this->getRequest()->getParam('mode');?>
+<?php $mode=($mode==""||$mode=="detail")?"detail":"simple";?>
+<?php $backgroundColor= $this->getStoreBackgroundColor($mode)?>
+<?php $defaultBackgroundColor = $this->getDefaultBackgroundColor();?>
+<?php $photoThumbnailSize = $this->getPhotoThumbnailSize($currentAlbum);?>
+<?php $albumThumbnailSize = $this->getAlbumThumbnailSize();?>
+<?php $slideshowSize = $this->getSlideshowSize($currentAlbum);?>
+<?php $collection = $this->getPhotos();?>
+<?php $this->getToolbar()->setCollection($collection);?>
+<?php $new_album = Mage::registry('current_album'); ?>
+
+<?php /*
+<div class="breadcrumbs">
+    <ul>
+	    <li class="home">
+	            <a href="<?php echo Mage::getBaseUrl(); ?>" title="Go to Home Page"><?php echo __('Home') ?></a>
+	            <span>/</span>
+	    </li>
+	    <li class="Realizzazioni">
+	            <a href="<?php echo Mage::getBaseUrl(); ?>realizzazioni" title=""><?php echo __('Realizzazioni') ?></a>
+	    </li>
+        <?php if($new_album['content']!='this is content of root album'){ ?>
+	    <li class="<?php echo $new_album->getTitle() ?>">
+	    		<span>/</span>
+	            <p><?php echo $new_album->getTitle() ?></p>
+	    </li>
+    	<?php } ?>
+    </ul>
+</div>
+*/ ?>
+
+<div id="mw_gallery">
+<?php /*
+	<div class="head_title">
+		<div class="search_container">
+			<?php echo $this->getChildHtml('search_form')?>
+		</div>
+		<h2><?php echo $currentAlbum->getTitle()?></h2>
+		<label><?php if($this->showAlbumUpdateDate()):?><?php echo date('M d, Y',strtotime($currentAlbum->getUpdateTime()));?><?php endif;?></label>
+		<p class="teaser"><?php echo $currentAlbum->getContent() ?></p>
+		
+	</div>
+*/ ?>
+	
+	<!-- Subalbum list -->
+	<div class="gallery-container album">
+		<div class="page-title realizzazioni">
+        	<h1>Realizzazioni</h1>
+    	</div>
+		
+		<ul>
+			<?php $i=0;
+				$collection1 = $this->getSubAlbums();
+				foreach ($collection1 as $item) { ?>
+				<?php if (++$i%5 ==0): ?>
+				<li class="item last"  >
+				<?php else:?>
+				<li class="item">
+				<?php endif;?>
+					<div class="box">	
+						<a href="<?php echo $this->getUrl($this->getUrlRewrite($item)); if($this->_getStore()->getCode()!="default") echo '?___store='.$this->_getStore()->getCode() ?>" alt="<?php echo $item->getTitle() ?>" class="box-img">
+						<?php if(file_exists(Mage::getBaseDir('media').DS.$item->getFilename())):?>
+							<?php $src = $this->helper('gallery/image')->init($item->getFilename())->resize($albumThumbnailSize['width'], $albumThumbnailSize['height']) ?>
+						<?php else:?>
+							<?php $src=$this->getSkinUrl("images/catalog/product/placeholder/small_image.jpg")?>
+						<?php endif;?>
+							<img class="bg_img_allbum" src="<?php echo $src;?>" alt="magento gallery" />
+						</a>
+						<h2><a href="<?php echo $this->getUrl($this->getUrlRewrite($item)); if($this->_getStore()->getCode()!="default") echo '?___store='.$this->_getStore()->getCode() ?>" alt="View Project"><?php echo $item->getTitle() ?></a></h2>
+					</div>
+					<?php /* <label><?php if($this->showAlbumUpdateDate()):?> <?php echo date('M d, Y',strtotime($item->getUpdateTime()));?><?php endif;?></label> 
+					<p class="disp_none"><?php if($this->showTotalPhotos()):?><?php echo $this->__('Total photos:') ?><?php echo $this->getPhotosOfAlbum($item)->getSize();?> <?php endif;?></p>
+					<p class="desc_album"><?php echo $item->getDescription() ?></p> */ ?>
+				</li>
+			<?php } ?>
+			
+			
+		</ul>
+		<div class="clear_both"><span> &nbsp; </span></div>
+		<?php /* echo $this->getToolbar()->toHtml(); */?>
+	</div>
+	
+	
+	
+		
+	<?php $new_album = Mage::registry('current_album'); ?>
+	<?php $srcImg = $this->helper('gallery/image')->init($new_album['filename']);
+		echo $this->getToolbar()->setCollection($collection);	
+	?>
+	<?php if($new_album['content']!='this is content of root album'){ ?>
+		<div class="page-title">
+        	<h1><?php echo $new_album->getTitle() ?></h1>
+    	</div>
+		<div class="realizza-view">
+			<div class="realizza-media">
+				<div class="box-img"><img src="<?php echo $srcImg ?>" alt="" /></div>
+			</div>
+			<div class="realizza-info">
+				<?php echo $new_album['content'] ?>
+			</div>
+		</div>
+	<?php } ?>	
+	<?php if($collection->getSize() >0){ ?>	
+		<div class="realizza-gallery">
+			<div class="title"><?php echo __('Gallery') ?></div>
+			
+			<div class="owl-carousel" id="realizza-gallery">
+			<?php $i=0; foreach($collection->getData() as $item){?>
+			<?php $i++; ?>
+			<?php //var_dump($item['filename']);die; ?>
+				<div class="item">
+					<a href="<?php echo $this->helper('gallery/image')->init($item['filename']) ?>" data-lightbox="set-gallery"><img src="<?php echo $this->helper('gallery/image')->init($item['filename']) ?>" class="set-image-gallery" alt="" /><?php $item['content'] ?></a>
+				</div>
+			<?php } ?>	
+				
+			</div>
+		</div>
+		
+			
+	<?php } ?>
+		
+	<!-- Photos list -->
+	
+	
+</div>
+
+<script type="text/javascript">
+    jQuery('#realizza-gallery').owlCarousel({
+        loop: false,
+        navSpeed: 1000,
+        smartSpeed:1000,
+        margin: 30,
+        autoplay:false,
+        nav:true,
+        navText:['<a href="javascript:void(0)"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></a>','<a href="javascript:void(0)"><i class="fa fa-chevron-circle-right" aria-hidden="true"></i></a>'],
+        responsiveClass: false,
+        responsive: {
+            0: {
+                items: 1,
+                // autoplay:true,
+                nav: true
+            },
+            361: {
+                items: 1,
+                // autoplay:true,
+                nav: true
+            },
+            641: {
+                items: 2,
+                // autoplay:true,
+                nav: true
+            },
+            768: {
+                items: 2,
+                // nav: true,
+                loop: false,
+                // autoplay:true,
+                margin: 20
+            },
+            1024: {
+                items: 3,
+                nav: true,
+                loop: false,
+                // autoplay:true,
+                dots: false,
+                margin: 30
+            }               
+        }
+    });
+</script>
+

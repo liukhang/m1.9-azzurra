@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<layout>	
+	<storelocator_location_getlist>
+	<reference>
+        <block type="storelocator/location" name="root" template="md/storelocator/123.phtml" output="toHtml"></block>
+    </reference>
+	</storelocator_location_getlist>
+	
+	<storelocator_location_getfinter>
+	<reference>
+        <block type="storelocator/location" name="root" template="md/storelocator/finter.phtml" output="toHtml"></block>
+    </reference>
+	</storelocator_location_getfinter>
+	
+	
+	<storelocator_index_index>
+		<reference name="head">
+            <action method="addCss"><stylesheet>md/storelocator/style.css</stylesheet></action>
+		</reference>
+		<reference name="root">
+            <action method="setTemplate"><template>page/1column.phtml</template></action>
+        </reference>
+		<reference name="content">
+            <block type="storelocator/location" template="md/storelocator/storelocator.phtml" name="storelocator.map2" />
+        </reference>
+	</storelocator_index_index>
+	
+	<storelocator_map2_index>
+		<reference name="root">
+            <action method="setTemplate"><template>page/empty.phtml</template></action>
+        </reference>
+		<reference name="content">
+            <block type="core/template" template="md/storelocator/xmlmap.php" name="storelocator.map3" >
+            </block>
+        </reference>
+	</storelocator_map2_index>
+	
+</layout>
